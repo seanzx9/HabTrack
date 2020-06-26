@@ -1,0 +1,20 @@
+<resources>
+
+    <string name="app_name">HabTrack</string>
+    <string name="wall">Wall</string>
+    <string name="friends">Friends</string>
+    <string name="post">Post</string>
+    <string name="notifications">Notifications</string>
+    <string name="profile">Profile</string>
+
+    <string name="login">Sign In</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="forgot">Forgot Password\?</string>
+    <string name="or">OR</string>
+    <string name="new_here">New here\?\u0020</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="google_sign_in">Sign in with Google</string>
+    <string name="facebook_sign_in">Sign in with Facebook</string>
+
+</resources>
