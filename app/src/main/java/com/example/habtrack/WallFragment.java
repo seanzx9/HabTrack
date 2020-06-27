@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -21,6 +22,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 
@@ -29,19 +32,11 @@ import java.util.Locale;
 import java.util.Map;
 
 public class WallFragment extends Fragment {
-    private String token;
+    private FirebaseAuth mAuth;
 
     public WallFragment() {}
 
-    public static WallFragment newInstance(String token) {
-        WallFragment wallFragment = new WallFragment();
-
-        Bundle bundle = new Bundle();
-        bundle.putString("token", token);
-        wallFragment.setArguments(bundle);
-
-        return wallFragment;
-    }
+    public static WallFragment newInstance() { return new WallFragment(); }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,12 +59,24 @@ public class WallFragment extends Fragment {
             }
         });
 
-        token = getArguments().getString("token");
-
-        //test token
-        TextView text = view.findViewById(R.id.test);
-        text.setText(token);
+        mAuth = FirebaseAuth.getInstance();
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        updateUI(currentUser);
+    }
+
+    private void updateUI(FirebaseUser user) {
+        if (user != null) {
+            TextView text = getView().findViewById(R.id.test);
+            text.setText(user.getEmail());
+        }
+        else
+            Toast.makeText(getContext(), "No user found", Toast.LENGTH_SHORT).show();
     }
 }
