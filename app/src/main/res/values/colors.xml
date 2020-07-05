@@ -7,16 +7,19 @@
     <color name="light_black">#2A2828</color>
     <color name="black">#1F1E1E</color>
     <color name="dark_black">#0A0A0A</color>
-    <color name="purple_black">#0D050F</color>
+    <color name="purple_black">#17041C</color>
     <color name="purple">#A947C2</color>
-    <color name="pink">#F4BFDB</color>
-    <color name="green">#45B69C</color>
+    <color name="red">#FF6666</color>
+    <color name="blue">#86BBD8</color>
     <color name="facebook_blue">#3B5998</color>
 
     <color name="background">#FFFFFF</color>
-    <color name="text">#2A2828</color>
+    <color name="background_contrast">#FBFAFC</color>
+    <color name="start">#FFFFFF</color>
+    <color name="end">#FFFFFF</color>
+    <color name="text">#1F1E1E</color>
     <color name="hint">#BABDBD</color>
-    <color name="edit_text_on">#45B69C</color>
-    <color name="nav_on">#A947C2</color>
-    <color name="nav_off">#514F4F</color>
+    <color name="nav_tint">#0A0A0A</color>
+    <color name="icon_tint">#0A0A0A</color>
+    <color name="edit_text_on">#86BBD8</color>
 </resources>

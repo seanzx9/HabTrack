@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="background">#0D050F</color>
+    <color name="background">#100713</color>
+    <color name="background_contrast">#210E26</color>
+    <color name="start">#0A0A0A</color>
+    <color name="end">#130017</color>
     <color name="text">#F1F1F1</color>
     <color name="hint">#514F4F</color>
-    <color name="nav_on">#A947C2</color>
-    <color name="nav_off">#BABDBD</color>
+    <color name="nav_tint">#BABDBD</color>
+    <color name="icon_tint">#FFFFFF</color>
 </resources>

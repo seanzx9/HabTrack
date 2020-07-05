@@ -2,36 +2,29 @@ package com.example.habtrack;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.functions.FirebaseFunctions;
-import com.google.firebase.functions.HttpsCallableResult;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
 public class WallFragment extends Fragment {
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
+    private RecyclerView.Adapter adapter;
+    private ArrayList<HashMap<String, Object>> wallItems;
+    private boolean loading = true;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
     private FirebaseAuth mAuth;
 
     public WallFragment() {}
@@ -59,7 +52,18 @@ public class WallFragment extends Fragment {
             }
         });
 
-        mAuth = FirebaseAuth.getInstance();
+        //initialize arraylist for wall
+        wallItems = new ArrayList<>();
+        loadWallFromDatabase();
+
+        //initialize RecyclerView
+        recyclerView = (RecyclerView) view.findViewById(R.id.wall);
+        layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new WallAdapter(wallItems);
+        recyclerView.setAdapter(adapter);
+
+        //mAuth = FirebaseAuth.getInstance();
 
         return view;
     }
@@ -67,16 +71,40 @@ public class WallFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        updateUI(currentUser);
     }
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
-            TextView text = getView().findViewById(R.id.test);
-            text.setText(user.getEmail());
         }
         else
             Toast.makeText(getContext(), "No user found", Toast.LENGTH_SHORT).show();
+    }
+
+    private void loadWallFromDatabase() {
+        //random data
+        String[] testUsernames = {"john_smith", "jane_doe", "gurp956", "seanzx9", "jupy"};
+        String[] testHabits = {"Work Out", "Read", "Meditate", "Drink water", "Nap", "Eat fruit",
+                "Practice piano", "Work on project", "Finish essay", "Read the news"};
+        int[] testIcons = {R.drawable.post, R.drawable.friends_on, R.drawable.notification_on};
+        String[] testFrequency = {"days", "weeks", "months"};
+        Boolean[] likedArray = {true, false};
+
+        //generate random data for testing
+        for (int i = 1; i <= 500; i++) {
+            HashMap<String, Object> item = new HashMap<>();
+            item.put("profilePic", R.drawable.profile_on);
+            item.put("username", testUsernames[(int)(Math.random() * 5)]);
+            item.put("iconId", testIcons[(int)(Math.random() * 3)]);
+            item.put("habitName", testHabits[(int)(Math.random() * 10)]);
+            int streak = (int)(Math.random() * 200) + 1;
+            item.put("curStreak", streak);
+            item.put("longStreak", streak + (int)(Math.random() * 200));
+            item.put("frequency", testFrequency[(int)(Math.random() * 3)]);
+            item.put("isLiked", likedArray[(int)(Math.random()* 2)]);
+            item.put("likes", (int)(Math.random() * 500));
+            wallItems.add(item);
+        }
     }
 }

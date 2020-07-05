@@ -22,8 +22,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
 
-        mAuth = FirebaseAuth.getInstance();
-
         openFragment(WallFragment.newInstance());
 
         //initialize bottom navbar
@@ -52,13 +50,16 @@ public class MainActivity extends AppCompatActivity {
                         return false;
                     }
                 });
+
+        //mAuth = FirebaseAuth.getInstance();
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        updateUI(currentUser);
     }
 
     private void updateUI(FirebaseUser user) {
