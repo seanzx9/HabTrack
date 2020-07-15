@@ -41,6 +41,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import org.w3c.dom.Text;
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = LoginActivity.class.getName();
     private final static int RC_SIGN_IN = 1;
@@ -139,10 +141,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
                 View emailView = (View) findViewById(R.id.email_input);
                 View passwordView = (View) findViewById(R.id.password_input);
+                View signUpView = (View) findViewById(R.id.email_login);
+
+                //shared element transition
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
                         LoginActivity.this,
                         Pair.create(emailView, emailView.getTransitionName()),
-                        Pair.create(passwordView, passwordView.getTransitionName()));
+                        Pair.create(passwordView, passwordView.getTransitionName()),
+                        Pair.create(signUpView, signUpView.getTransitionName()));
+
                 startActivity(intent, options.toBundle());
                 break;
             case R.id.forgot:

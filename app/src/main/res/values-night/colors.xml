@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="calendar_purple">#A947C2</color>
+    <color name="calendar_red">#FF6666</color>
+    <color name="calendar_green">#53DD6C</color>
+    <color name="calendar_blue">#90BEDE</color>
+    <color name="calendar_yellow">#FFD166</color>
+    <color name="calendar_black">#514F4F</color>
+    <color name="black">#F2F2F2</color>
+
     <color name="background">#100713</color>
     <color name="background_contrast">#210E26</color>
+    <color name="shadow">#F2F2F2</color>
+    <color name="card">#0A0A0A</color>
+    <color name="divider">#2A2828</color>
     <color name="start">#0A0A0A</color>
     <color name="end">#130017</color>
     <color name="text">#F1F1F1</color>
     <color name="hint">#514F4F</color>
     <color name="nav_tint">#BABDBD</color>
     <color name="icon_tint">#FFFFFF</color>
+    <color name="pie_off">#1F1E1E</color>
 </resources>

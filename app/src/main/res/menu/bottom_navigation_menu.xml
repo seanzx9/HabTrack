@@ -13,7 +13,7 @@
     <item
         android:id="@+id/post"
         android:enabled="true"
-        android:icon="@drawable/post"
+        android:icon="@drawable/post_icon"
         android:title="@string/post" />
     <item
         android:id="@+id/notifications"

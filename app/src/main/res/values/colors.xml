@@ -1,20 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="white">#FFFFFF</color>
-    <color name="light_grey">#F1F1F1</color>
+    <color name="light_grey">#F2F2F2</color>
     <color name="grey">#BABDBD</color>
     <color name="dark_grey">#514F4F</color>
     <color name="light_black">#2A2828</color>
-    <color name="black">#1F1E1E</color>
     <color name="dark_black">#0A0A0A</color>
-    <color name="purple_black">#17041C</color>
-    <color name="purple">#A947C2</color>
-    <color name="red">#FF6666</color>
-    <color name="blue">#86BBD8</color>
+    <color name="purple_black">#2E1D32</color>
     <color name="facebook_blue">#3B5998</color>
+
+    <color name="calendar_purple">#E5C7EC</color>
+    <color name="purple">#A947C2</color>
+    <color name="calendar_red">#FFE0E0</color>
+    <color name="red">#FF6666</color>
+    <color name="calendar_green">#DAF3DF</color>
+    <color name="green">#4AC661</color>
+    <color name="calendar_blue">#E8F2F8</color>
+    <color name="blue">#90BEDE</color>
+    <color name="calendar_yellow">#FFF5E0</color>
+    <color name="yellow">#FFD166</color>
+    <color name="calendar_black">#E6E6E6</color>
+    <color name="black">#2A2828</color>
 
     <color name="background">#FFFFFF</color>
     <color name="background_contrast">#FBFAFC</color>
+    <color name="shadow">#0A0A0A</color>
+    <color name="card">#FFFFFF</color>
+    <color name="divider">#F2F2F2</color>
     <color name="start">#FFFFFF</color>
     <color name="end">#FFFFFF</color>
     <color name="text">#1F1E1E</color>
@@ -22,4 +34,5 @@
     <color name="nav_tint">#0A0A0A</color>
     <color name="icon_tint">#0A0A0A</color>
     <color name="edit_text_on">#86BBD8</color>
+    <color name="pie_off">#F2F2F2</color>
 </resources>
