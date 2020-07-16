@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="calendar_purple">#A947C2</color>
-    <color name="calendar_red">#FF6666</color>
-    <color name="calendar_green">#53DD6C</color>
+    <color name="purple">#A947C2</color>
+    <color name="calendar_red">#E94F37</color>
+    <color name="red">#E94F37</color>
+    <color name="calendar_green">#43B929</color>
+    <color name="green">#43B929</color>
     <color name="calendar_blue">#90BEDE</color>
-    <color name="calendar_yellow">#FFD166</color>
+    <color name="blue">#90BEDE</color>
+    <color name="calendar_yellow">#F4B942</color>
+    <color name="yellow">#FCCA46</color>
     <color name="calendar_black">#514F4F</color>
     <color name="black">#F2F2F2</color>
 

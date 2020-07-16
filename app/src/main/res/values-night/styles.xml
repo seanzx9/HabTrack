@@ -26,7 +26,7 @@
 
     <style name="calendarText" parent="android:TextAppearance.DeviceDefault.Small">
         <item name="fontFamily">@font/roboto</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/text</item>
     </style>
 

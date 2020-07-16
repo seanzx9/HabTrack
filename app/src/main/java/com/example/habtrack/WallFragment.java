@@ -95,22 +95,27 @@ public class WallFragment extends Fragment {
         String[] testUsernames = {"john_smith", "jane_doe", "gurp956", "seanzx9", "jupy"};
         String[] testHabits = {"Work Out", "Read", "Meditate", "Drink water", "Nap", "Eat fruit",
                 "Practice piano", "Work on project", "Finish essay", "Read the news"};
-        int[] testIcons = {R.drawable.post_on, R.drawable.friends_on, R.drawable.notification_on};
+        int[] testIcons = {R.drawable.habit_alc, R.drawable.habit_baseball,
+                R.drawable.habit_basketball, R.drawable.habit_bath, R.drawable.habit_bike,
+                R.drawable.habit_book, R.drawable.habit_boxing, R.drawable.habit_brush,
+                R.drawable.habit_coffee, R.drawable.habit_phone, R.drawable.habit_person,
+                R.drawable.habit_food, R.drawable.habit_money, R.drawable.habit_leaf};
         String[] testFrequency = {"days", "weeks", "months"};
         Boolean[] likedArray = {true, false};
         int[] colors = {R.color.purple, R.color.green, R.color.red, R.color.blue, R.color.black,
                 R.color.yellow};
         CalendarDay[] dates = {CalendarDay.from(2020, 7, 10),
-                CalendarDay.from(2020, 7, 11),
-                CalendarDay.from(2020, 7, 14)};
+                CalendarDay.from(2020, 7, 12),
+                CalendarDay.from(2020, 7, 14),
+                CalendarDay.from(2020, 7, 15)};
 
         //generate random data for testing
         for (int i = 0; i <= 500; i++) {
             HashMap<String, Object> item = new HashMap<>();
             item.put("color", colors[(int)(Math.random() * 6)]);
-            item.put("profilePic", R.drawable.profile_on);
+            item.put("pfp", R.drawable.default_pfp);
             item.put("username", testUsernames[(int)(Math.random() * 5)]);
-            item.put("iconId", testIcons[(int)(Math.random() * 3)]);
+            item.put("iconId", testIcons[(int)(Math.random() * 14)]);
             item.put("habitName", testHabits[(int)(Math.random() * 10)]);
             int streak = (int)(Math.random() * 200) + 1;
             item.put("curStreak", streak);

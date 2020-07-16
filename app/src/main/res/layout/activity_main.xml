@@ -28,7 +28,7 @@
         android:elevation="3dp"
         android:outlineAmbientShadowColor="@color/text"
         android:outlineSpotShadowColor="@color/text"
-        app:itemIconSize="28dp"
+        app:itemIconSize="32dp"
         app:itemIconTint="@color/bottom_nav"
         app:itemTextColor="@color/bottom_nav"
         app:labelVisibilityMode="unlabeled"
