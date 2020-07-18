@@ -1,38 +1,25 @@
 package com.example.habtrack;
 
-import android.animation.ValueAnimator;
 import android.os.Bundle;
-
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.Toast;
-import android.widget.ToggleButton;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 
 public class WallFragment extends Fragment {
-    private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
-    private RecyclerView.Adapter adapter;
+    private RecyclerView.Adapter<WallAdapter.WallViewHolder> adapter;
     private ArrayList<HashMap<String, Object>> wallItems;
+    private ArrayList<HashMap<String, Object>> database; //test data
     private FirebaseAuth mAuth;
 
     public WallFragment() {}
@@ -62,14 +49,26 @@ public class WallFragment extends Fragment {
 
         //initialize arraylist for wall
         wallItems = new ArrayList<>();
-        loadWallFromDatabase();
+        database = new ArrayList<>();
+        generateTestData();
+        loadNextData(0);
 
         //initialize RecyclerView
-        recyclerView = (RecyclerView) view.findViewById(R.id.wall);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.wall);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         adapter = new WallAdapter(wallItems, layoutManager);
         recyclerView.setAdapter(adapter);
+
+        //lazy load wall items
+        recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                loadNextData(page);
+            }
+        });
 
         //mAuth = FirebaseAuth.getInstance();
 
@@ -85,12 +84,16 @@ public class WallFragment extends Fragment {
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
+
         }
         else
             Toast.makeText(getContext(), "No user found", Toast.LENGTH_SHORT).show();
     }
 
-    private void loadWallFromDatabase() {
+    /**
+     * Generates test data in place of database.
+     */
+    private void generateTestData() {
         //random data
         String[] testUsernames = {"john_smith", "jane_doe", "gurp956", "seanzx9", "jupy"};
         String[] testHabits = {"Work Out", "Read", "Meditate", "Drink water", "Nap", "Eat fruit",
@@ -107,13 +110,14 @@ public class WallFragment extends Fragment {
         CalendarDay[] dates = {CalendarDay.from(2020, 7, 10),
                 CalendarDay.from(2020, 7, 12),
                 CalendarDay.from(2020, 7, 14),
-                CalendarDay.from(2020, 7, 15)};
+                CalendarDay.from(2020, 7, 15),
+                CalendarDay.from(2020, 7, 17)};
 
         //generate random data for testing
         for (int i = 0; i <= 500; i++) {
             HashMap<String, Object> item = new HashMap<>();
             item.put("color", colors[(int)(Math.random() * 6)]);
-            item.put("pfp", R.drawable.default_pfp);
+            //item.put("pfp", R.drawable.default_pfp);
             item.put("username", testUsernames[(int)(Math.random() * 5)]);
             item.put("iconId", testIcons[(int)(Math.random() * 14)]);
             item.put("habitName", testHabits[(int)(Math.random() * 10)]);
@@ -125,7 +129,18 @@ public class WallFragment extends Fragment {
             item.put("dates", dates);
             item.put("isLiked", likedArray[(int)(Math.random()* 2)]);
             item.put("likes", (int)(Math.random() * 500));
-            wallItems.add(item);
+            database.add(item);
         }
+    }
+
+    /**
+     * Loads next items to the wall.
+     *
+     * @param offset page offset
+     */
+    public void loadNextData(int offset) {
+        for (int i = offset; i < offset + 10; i++)
+            wallItems.add(database.get(i));
+        if (offset > 0) adapter.notifyDataSetChanged();
     }
 }

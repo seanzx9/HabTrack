@@ -39,11 +39,12 @@
             app:layout_constraintTop_toTopOf="@id/profile_pic"
             app:layout_constraintBottom_toBottomOf="@id/profile_pic"
             app:layout_constraintLeft_toRightOf="@id/profile_pic"
+            app:layout_constraintVertical_bias="0.4"
             android:fontFamily="@font/roboto_medium"
             android:text="@string/username"
             android:textSize="16sp"
             android:textColor="@color/text"
-            android:layout_marginStart="8dp" />
+            android:layout_marginStart="5dp" />
 
         <ImageView
             android:id="@+id/habit_icon"

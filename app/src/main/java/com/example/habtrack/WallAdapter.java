@@ -146,8 +146,10 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
          }
          else {
              pfp = ContextCompat.getDrawable(wvh.habitIcon.getContext(), R.drawable.default_pfp);
+             wvh.profilePic.setBorderColor(ContextCompat
+                     .getColor(wvh.card.getContext(), R.color.background));
              wvh.profilePic.setImageTintList(ColorStateList
-                     .valueOf(ContextCompat.getColor(wvh.card.getContext(), R.color.icon_tint)));
+                     .valueOf(ContextCompat.getColor(wvh.card.getContext(), R.color.black)));
          }
         wvh.profilePic.setImageDrawable(pfp);
 
