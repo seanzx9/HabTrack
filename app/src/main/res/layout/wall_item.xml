@@ -2,6 +2,7 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:layout_constraintTop_toTopOf="parent"
@@ -11,7 +12,7 @@
     app:cardCornerRadius="15dp"
     android:outlineSpotShadowColor="@color/shadow"
     android:outlineAmbientShadowColor="@color/shadow"
-    app:cardBackgroundColor="@color/background_contrast">
+    app:cardBackgroundColor="@android:color/transparent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/card"
@@ -53,7 +54,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:contentDescription="@string/habit_icon"
-            android:tint="@color/icon_tint"
+            android:tint="@color/purple"
             android:src="@drawable/wall_on" />
 
         <TextView
@@ -129,7 +130,7 @@
                 app:mcv_tileHeight="35dp"
                 app:mcv_headerTextAppearance="@style/calendarHeader"
                 app:mcv_dateTextAppearance="@style/calendarText"
-                app:mcv_selectionColor="@color/calendar_black"
+                app:mcv_selectionColor="@color/calendar_purple"
                 app:mcv_leftArrowMask="@drawable/left_triangle"
                 app:mcv_rightArrowMask="@drawable/right_triangle" />
 

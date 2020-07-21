@@ -23,14 +23,15 @@
     <color name="black">#2A2828</color>
 
     <color name="background">#FFFFFF</color>
-    <color name="background_contrast">#FBFAFC</color>
+    <color name="background_contrast">#F2F2F2</color>
     <color name="shadow">#0A0A0A</color>
     <color name="card">#FFFFFF</color>
+    <color name="checked">#F6ECF8</color>
     <color name="divider">#F2F2F2</color>
     <color name="start">#FFFFFF</color>
     <color name="end">#FFFFFF</color>
     <color name="text">#1F1E1E</color>
-    <color name="hint">#BABDBD</color>
+    <color name="hint">#A7AAAA</color>
     <color name="nav_tint">#2A2828</color>
     <color name="icon_tint">#2A2828</color>
     <color name="edit_text_on">#86BBD8</color>

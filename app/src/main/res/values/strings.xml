@@ -36,5 +36,8 @@
     <string name="best">Best</string>
     <string name="total">Total</string>
     <string name="started">Started</string>
+    <string name="welcome">Welcome back.</string>
+    <string name="morning">Good morning.</string>
+    <string name="evening">Good evening.</string>
 
 </resources>

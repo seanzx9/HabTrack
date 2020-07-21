@@ -2,7 +2,7 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:statusBarColor">@color/purple</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="colorAccent">@color/purple</item>
         <item name="android:windowActivityTransitions">true</item>

@@ -17,6 +17,7 @@
     <color name="background_contrast">#210E26</color>
     <color name="shadow">#F2F2F2</color>
     <color name="card">#0A0A0A</color>
+    <color name="checked">#210e26</color>
     <color name="divider">#2A2828</color>
     <color name="start">#0A0A0A</color>
     <color name="end">#130017</color>

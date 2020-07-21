@@ -1,13 +1,18 @@
 package com.example.habtrack;
 
 import android.animation.ValueAnimator;
+import android.app.Activity;
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Vibrator;
 import android.util.DisplayMetrics;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -20,8 +25,10 @@ import android.widget.Space;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GestureDetectorCompat;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,6 +47,7 @@ import lecho.lib.hellocharts.view.PieChartView;
 public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder> {
     private ArrayList<HashMap<String, Object>> data;
     private RecyclerView.LayoutManager layoutManager;
+    private Context context;
 
     /**
      * Constructor with parameters.
@@ -69,6 +77,7 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
      * initialize components in card view
      */
     public static class WallViewHolder extends RecyclerView.ViewHolder {
+        private CardView cardView;
         private ConstraintLayout card;
         private CircleImageView profilePic;
         private TextView username;
@@ -90,6 +99,7 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
 
         public WallViewHolder(View v) {
             super(v);
+            cardView = (CardView) v.findViewById(R.id.card_view);
             card = (ConstraintLayout) v.findViewById(R.id.card);
             profilePic = (CircleImageView) v.findViewById(R.id.profile_pic);
             username = (TextView) v.findViewById(R.id.username);
@@ -120,8 +130,11 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
     @Override
     public void onBindViewHolder(final WallViewHolder wvh, final int position) {
         final HashMap<String, Object> item = data.get(position);
+        context = wvh.cardView.getContext();
 
         wvh.setIsRecyclable(false);
+        if (position == 0) adjustMarginTop(wvh);
+        if (position == data.size() - 1) adjustMarginBottom(wvh);
 
         setProfile(wvh, item);
         setHabitNameAndIcon(wvh, item);
@@ -130,6 +143,35 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
         setChart(wvh, item);
         setExpandButton(wvh, position);
         setLikePanel(wvh, item);
+    }
+
+    /**
+     * Getter for the size of the data.
+     *
+     * @return number of components in the data
+     */
+    @Override
+    public int getItemCount() {
+        return data.size();
+    }
+
+    private void adjustMarginTop(WallViewHolder wvh) {
+        ViewGroup.MarginLayoutParams layoutParams =
+                (ViewGroup.MarginLayoutParams) wvh.cardView.getLayoutParams();
+        int topMargin = dpToPx(context, 15);
+        int sideMargin = dpToPx(context, 10);
+        layoutParams.setMargins(sideMargin, topMargin, sideMargin, 0);
+        wvh.cardView.requestLayout();
+    }
+
+    private void adjustMarginBottom(WallViewHolder wvh) {
+        ViewGroup.MarginLayoutParams layoutParams =
+                (ViewGroup.MarginLayoutParams) wvh.cardView.getLayoutParams();
+        int topMargin = dpToPx(context, 20);
+        int bottomMargin = dpToPx(context, 25);
+        int sideMargin = dpToPx(context, 10);
+        layoutParams.setMargins(sideMargin, topMargin, sideMargin, bottomMargin);
+        wvh.cardView.requestLayout();
     }
 
     /**
@@ -142,14 +184,13 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
         //profile image
         Drawable pfp;
          if (item.get("pfp") != null) {
-             pfp = ContextCompat.getDrawable(wvh.habitIcon.getContext(), (int) item.get("pfp"));
+             pfp = ContextCompat.getDrawable(context, (int) item.get("pfp"));
          }
          else {
-             pfp = ContextCompat.getDrawable(wvh.habitIcon.getContext(), R.drawable.default_pfp);
-             wvh.profilePic.setBorderColor(ContextCompat
-                     .getColor(wvh.card.getContext(), R.color.background));
+             pfp = ContextCompat.getDrawable(context, R.drawable.default_pfp);
+             wvh.profilePic.setBorderColor(ContextCompat.getColor(context, R.color.background));
              wvh.profilePic.setImageTintList(ColorStateList
-                     .valueOf(ContextCompat.getColor(wvh.card.getContext(), R.color.black)));
+                     .valueOf(ContextCompat.getColor(context, R.color.black)));
          }
         wvh.profilePic.setImageDrawable(pfp);
 
@@ -172,8 +213,8 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
 
         //habit icon
         Drawable habitIcon = (item.get("iconId") != null)?
-                ContextCompat.getDrawable(wvh.habitIcon.getContext(), (int) item.get("iconId")):
-                ContextCompat.getDrawable(wvh.habitIcon.getContext(), R.drawable.app_icon);
+                ContextCompat.getDrawable(context, (int) item.get("iconId")):
+                ContextCompat.getDrawable(context, R.drawable.app_icon);
         wvh.habitIcon.setImageDrawable(habitIcon);
     }
 
@@ -213,9 +254,6 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
         CalendarDay[] dates = (CalendarDay[]) item.get("dates");
         if (dates == null || dates.length <= 0) return;
 
-        //selection color
-        wvh.mcv.setSelectionColor(getCalendarColor(wvh, item));
-
         //select days
         for (CalendarDay date : dates)
             wvh.mcv.setDateSelected(date, true);
@@ -230,16 +268,13 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
     private void setChart(final WallViewHolder wvh, HashMap<String, Object> item) {
         //data
         List<SliceValue> pieData = new ArrayList<>();
-        int grey = ContextCompat.getColor(wvh.chart.getContext(), R.color.pie_off);
+        int grey = ContextCompat.getColor(context, R.color.pie_off);
         pieData.add(new SliceValue(17, grey));
-        pieData.add(new SliceValue(83, getColor(wvh, item)));
+        pieData.add(new SliceValue(83, getColor(wvh, R.color.purple)));
 
         PieChartData pieChartData = new PieChartData(pieData);
         pieChartData.setHasCenterCircle(true).setCenterCircleScale(0.75f);
         wvh.chart.setPieChartData(pieChartData);
-
-        //chart percent text color
-        wvh.percent.setTextColor(getColor(wvh, item));
     }
 
     /**
@@ -264,7 +299,7 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
                 }
 
                 RecyclerView.SmoothScroller smoothScroller = new
-                        LinearSmoothScroller(wvh.card.getContext()) {
+                        LinearSmoothScroller(context) {
                             private static final float MILLISECONDS_PER_INCH = 100f;
 
                             @Override
@@ -281,6 +316,14 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
                 layoutManager.startSmoothScroll(smoothScroller);
             }
         });
+
+        wvh.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                wvh.expandButton.performClick();
+                return false;
+            }
+        });
     }
 
     /**
@@ -295,12 +338,20 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
-                    wvh.likeIcon.setBackgroundTintList(ColorStateList.valueOf(getColor(wvh, item)));
+                    int purple = ContextCompat.getColor(context, R.color.purple);
+                    wvh.likeIcon.setBackgroundTintList(ColorStateList.valueOf(purple));
                 }
                 else {
-                    int color = ContextCompat.getColor(wvh.likeIcon.getContext(), R.color.black);
-                    wvh.likeIcon.setBackgroundTintList(ColorStateList.valueOf(color));
+                    int black = ContextCompat.getColor(context, R.color.black);
+                    wvh.likeIcon.setBackgroundTintList(ColorStateList.valueOf(black));
                 }
+            }
+        });
+
+        wvh.likes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                wvh.likeIcon.performClick();
             }
         });
 
@@ -316,96 +367,15 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
     }
 
     /**
-     * Gets and returns habit's color.
-     *
-     * @param item element of data
-     * @return color of habit
-     */
-    private int getColor(final WallViewHolder wvh, HashMap<String, Object> item) {
-        int colorId = (item.get("color") != null)? (int) item.get("color") : R.color.black;
-        return ContextCompat.getColor(wvh.card.getContext(), colorId);
-    }
-
-    /**
-     * Formats date for string.
-     *
-     * @param date date to format
-     * @return formatted date string
-     */
-    private String formatDate(CalendarDay date) {
-        String original = date.toString();
-        String clean = original.replaceAll("[CalendrDy{}]", "");
-        String[] split = clean.split("-");
-
-        String year = split[0];
-        String day = split[2];
-
-        String monthNum = split[1];
-        String month;
-        switch (monthNum) {
-            case "1":
-                month = "Jan";
-            case "2":
-                month = "Feb";
-            case "3":
-                month = "Mar";
-            case "4":
-                month = "Apr";
-            case "5":
-                month = "May";
-            case "6":
-                month = "Jun";
-            case "7":
-                month = "Jul";
-            case "8":
-                month = "Aug";
-            case "9":
-                month = "Sep";
-            case "10":
-                month = "Oct";
-            case "11":
-                month = "Nov";
-            case "12":
-                month = "Dec";
-            default:
-                month = "Jan";
-        }
-
-        return month + " " + day + ", " + year;
-    }
-
-    /**
-     * Returns selection color of calendar depending on habit color.
+     * Gets color by id.
      *
      * @param wvh view holder
-     * @param item element of data
-     * @return selection color of calendar view
+     * @param id color id
+     * @return color from id
      */
-    private int getCalendarColor(final WallViewHolder wvh, HashMap<String, Object> item) {
-        int colorId = (item.get("color") != null)? (int) item.get("color") : R.color.black;
-        switch(colorId) {
-            case R.color.purple:
-                return ContextCompat.getColor(wvh.card.getContext(), R.color.calendar_purple);
-            case R.color.red:
-                return ContextCompat.getColor(wvh.card.getContext(), R.color.calendar_red);
-            case R.color.yellow:
-                return ContextCompat.getColor(wvh.card.getContext(), R.color.calendar_yellow);
-            case R.color.blue:
-                return ContextCompat.getColor(wvh.card.getContext(), R.color.calendar_blue);
-            case R.color.green:
-                return ContextCompat.getColor(wvh.card.getContext(), R.color.calendar_green);
-            default:
-                return ContextCompat.getColor(wvh.card.getContext(), R.color.calendar_black);
-        }
+    private int getColor(final WallViewHolder wvh, int id) {
+        return ContextCompat.getColor(context, id);
     }
-
-    /**
-     * Getter for the size of the data.
-     *
-     * @return number of components in the data
-     */
-    @Override
-    public int getItemCount() { return data.size(); }
 
     /**
      * Expand the card to show extra statistics.
@@ -475,5 +445,16 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
         valueAnimator.setInterpolator(new DecelerateInterpolator());
         valueAnimator.setDuration(200);
         valueAnimator.start();
+    }
+
+    /**
+     * Converts dp to px.
+     *
+     * @param dp value in dp
+     * @param context context to get resources and device specific display metrics
+     * @return converted value as px
+     */
+    public int dpToPx(Context context, int dp) {
+        return Math.round(dp * context.getResources().getDisplayMetrics().density);
     }
 }

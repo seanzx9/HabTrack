@@ -1,6 +1,10 @@
 package com.example.habtrack;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
+
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -8,7 +12,11 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -16,9 +24,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class WallFragment extends Fragment {
-    private LinearLayoutManager layoutManager;
-    private RecyclerView.Adapter<WallAdapter.WallViewHolder> adapter;
+    private LinearLayoutManager llmVertical;
+    private LinearLayoutManager llmHorizontal;
+    private RecyclerView.Adapter<WallAdapter.WallViewHolder> adapterWall;
+    private RecyclerView.Adapter<PersonalAdapter.PersonalViewHolder> adapterPersonal;
     private ArrayList<HashMap<String, Object>> wallItems;
+    private ArrayList<HashMap<String, Object>> personalItems;
     private ArrayList<HashMap<String, Object>> database; //test data
     private FirebaseAuth mAuth;
 
@@ -34,7 +45,7 @@ public class WallFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.fragment_wall, container, false);
+        final View view =  inflater.inflate(R.layout.fragment_wall, container, false);
 
         //back button ends activity
         view.setFocusableInTouchMode(true);
@@ -49,24 +60,62 @@ public class WallFragment extends Fragment {
 
         //initialize arraylist for wall
         wallItems = new ArrayList<>();
+        personalItems = new ArrayList<>();
         database = new ArrayList<>();
         generateTestData();
         loadNextData(0);
 
-        //initialize RecyclerView
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.wall);
-        layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
-        adapter = new WallAdapter(wallItems, layoutManager);
-        recyclerView.setAdapter(adapter);
+        //initialize personal RecyclerView
+        final RecyclerView rvPersonal = (RecyclerView) view.findViewById(R.id.personal);
+        llmHorizontal = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        rvPersonal.setLayoutManager(llmHorizontal);
+        adapterPersonal = new PersonalAdapter(personalItems, llmHorizontal);
+        rvPersonal.setAdapter(adapterPersonal);
+
+        //initialize wall RecyclerView
+        RecyclerView rvWall = (RecyclerView) view.findViewById(R.id.wall);
+        llmVertical = new LinearLayoutManager(getContext());
+        rvWall.setLayoutManager(llmVertical);
+        adapterWall = new WallAdapter(wallItems, llmVertical);
+        rvWall.setAdapter(adapterWall);
 
         //lazy load wall items
-        recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+        rvWall.addOnScrollListener(new EndlessRecyclerViewScrollListener(llmVertical) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to the bottom of the list
                 loadNextData(page);
+            }
+        });
+
+        //fade top on scroll
+        AppBarLayout appBar = (AppBarLayout) view.findViewById(R.id.app_bar);
+        appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                rvPersonal.setAlpha(1.0f - Math.abs(verticalOffset / (float)
+                        appBarLayout.getTotalScrollRange()));
+
+                Window window = getActivity().getWindow();
+                CoordinatorLayout cl = (CoordinatorLayout) view.findViewById(R.id.main_layout);
+
+                if (rvPersonal.getAlpha() == 0.0) {
+                    cl.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.background));
+                    window.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.background));
+
+                    int uiFlag = getContext().getResources().getConfiguration().uiMode
+                            & Configuration.UI_MODE_NIGHT_MASK;
+                    int darkFlag = Configuration.UI_MODE_NIGHT_YES;
+                    window.getDecorView().setSystemUiVisibility((uiFlag == darkFlag)?
+                            view.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR:
+                            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                }
+                else {
+                    cl.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.purple));
+                    window.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.purple));
+                    window.getDecorView().setSystemUiVisibility(
+                            view.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                }
+
             }
         });
 
@@ -95,7 +144,7 @@ public class WallFragment extends Fragment {
      */
     private void generateTestData() {
         //random data
-        String[] testUsernames = {"john_smith", "jane_doe", "gurp956", "seanzx9", "jupy"};
+        String[] testUsername = {"john_smith", "jane_doe", "gurp956", "seanzx9", "jupy"};
         String[] testHabits = {"Work Out", "Read", "Meditate", "Drink water", "Nap", "Eat fruit",
                 "Practice piano", "Work on project", "Finish essay", "Read the news"};
         int[] testIcons = {R.drawable.habit_alc, R.drawable.habit_baseball,
@@ -105,31 +154,40 @@ public class WallFragment extends Fragment {
                 R.drawable.habit_food, R.drawable.habit_money, R.drawable.habit_leaf};
         String[] testFrequency = {"days", "weeks", "months"};
         Boolean[] likedArray = {true, false};
-        int[] colors = {R.color.purple, R.color.green, R.color.red, R.color.blue, R.color.black,
-                R.color.yellow};
-        CalendarDay[] dates = {CalendarDay.from(2020, 7, 10),
+        CalendarDay[] dates = {
+                CalendarDay.from(2020, 7, 10),
                 CalendarDay.from(2020, 7, 12),
                 CalendarDay.from(2020, 7, 14),
                 CalendarDay.from(2020, 7, 15),
-                CalendarDay.from(2020, 7, 17)};
+                CalendarDay.from(2020, 7, 17)
+        };
 
         //generate random data for testing
         for (int i = 0; i <= 500; i++) {
             HashMap<String, Object> item = new HashMap<>();
-            item.put("color", colors[(int)(Math.random() * 6)]);
             //item.put("pfp", R.drawable.default_pfp);
-            item.put("username", testUsernames[(int)(Math.random() * 5)]);
+            item.put("username", testUsername[(int)(Math.random() * 5)]);
             item.put("iconId", testIcons[(int)(Math.random() * 14)]);
             item.put("habitName", testHabits[(int)(Math.random() * 10)]);
             int streak = (int)(Math.random() * 200) + 1;
             item.put("curStreak", streak);
             item.put("bestStreak", streak + (int)(Math.random() * 200));
             item.put("total", streak * 2 + (int)(Math.random() * 200));
-            item.put("frequency", testFrequency[(int)(Math.random() * 3)]);
             item.put("dates", dates);
             item.put("isLiked", likedArray[(int)(Math.random()* 2)]);
             item.put("likes", (int)(Math.random() * 500));
             database.add(item);
+        }
+
+        //random data for personal habits
+        for (int i = 0; i < 10; i++) {
+            HashMap<String, Object> item = new HashMap<>();
+            item.put("habitName", testHabits[(int)(Math.random() * 10)]);
+            int streak = (int)(Math.random() * 200) + 1;
+            item.put("curStreak", streak);
+            item.put("frequency", testFrequency[(int)(Math.random() * 3)]);
+            item.put("dates", dates);
+            personalItems.add(item);
         }
     }
 
@@ -141,6 +199,6 @@ public class WallFragment extends Fragment {
     public void loadNextData(int offset) {
         for (int i = offset; i < offset + 10; i++)
             wallItems.add(database.get(i));
-        if (offset > 0) adapter.notifyDataSetChanged();
+        if (offset > 0) adapterWall.notifyDataSetChanged();
     }
 }
