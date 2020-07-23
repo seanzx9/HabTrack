@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -19,10 +20,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.checkbox.MaterialCheckBox;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
 public class PersonalAdapter extends RecyclerView.Adapter<PersonalAdapter.PersonalViewHolder> {
-    private ArrayList<HashMap<String, Object>> data;
+    private ArrayList<Map<String, Object>> data;
     private RecyclerView.LayoutManager layoutManager;
     private Context context;
 
@@ -31,7 +32,7 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalAdapter.Person
      *
      * @param data data to update wall with
      */
-    public PersonalAdapter(ArrayList<HashMap<String, Object>> data, RecyclerView.LayoutManager lm) {
+    public PersonalAdapter(ArrayList<Map<String, Object>> data, RecyclerView.LayoutManager lm) {
         this.data = data;
         this.layoutManager = lm;
     }
@@ -76,7 +77,7 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalAdapter.Person
      */
     @Override
     public void onBindViewHolder(final PersonalAdapter.PersonalViewHolder pvh, final int position) {
-        final HashMap<String, Object> item = data.get(position);
+        final Map<String, Object> item = data.get(position);
         context = pvh.cardView.getContext();
 
         pvh.setIsRecyclable(false);
@@ -95,14 +96,7 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalAdapter.Person
         pvh.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                ScaleAnimation buttonPress = new ScaleAnimation(
-                        0.98f, 1f,
-                        0.98f, 1f,
-                        Animation.RELATIVE_TO_SELF, 0.5f,
-                        Animation.RELATIVE_TO_SELF, 0.5f);
-                buttonPress.setFillAfter(true);
-                buttonPress.setDuration(100);
+                Animation buttonPress = AnimationUtils.loadAnimation(context, R.anim.button_press);
 
                 buttonPress.setAnimationListener(new Animation.AnimationListener() {
                     @Override
@@ -136,6 +130,11 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalAdapter.Person
         });
     }
 
+    /**
+     * Getter for the size of the data.
+     *
+     * @return number of components in the data
+     */
     @Override
     public int getItemCount() {
         return data.size();

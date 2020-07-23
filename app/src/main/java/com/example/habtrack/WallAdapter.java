@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
@@ -36,16 +37,17 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import lecho.lib.hellocharts.model.PieChartData;
 import lecho.lib.hellocharts.model.SliceValue;
 import lecho.lib.hellocharts.view.PieChartView;
+import static android.content.Context.VIBRATOR_SERVICE;
 
 public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder> {
-    private ArrayList<HashMap<String, Object>> data;
+    private ArrayList<Map<String, Object>> data;
     private RecyclerView.LayoutManager layoutManager;
     private Context context;
 
@@ -54,7 +56,7 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
      *
      * @param data data to update wall with
      */
-    public WallAdapter(ArrayList<HashMap<String, Object>> data, RecyclerView.LayoutManager lm) {
+    public WallAdapter(ArrayList<Map<String, Object>> data, RecyclerView.LayoutManager lm) {
         this.data = data;
         this.layoutManager = lm;
     }
@@ -129,7 +131,7 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
      */
     @Override
     public void onBindViewHolder(final WallViewHolder wvh, final int position) {
-        final HashMap<String, Object> item = data.get(position);
+        final Map<String, Object> item = data.get(position);
         context = wvh.cardView.getContext();
 
         wvh.setIsRecyclable(false);
@@ -180,22 +182,22 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
      * @param wvh view holder
      * @param item element of data
      */
-    private void setProfile(final WallViewHolder wvh, HashMap<String, Object> item) {
+    private void setProfile(final WallViewHolder wvh, Map<String, Object> item) {
         //profile image
         Drawable pfp;
-         if (item.get("pfp") != null) {
-             pfp = ContextCompat.getDrawable(context, (int) item.get("pfp"));
-         }
-         else {
-             pfp = ContextCompat.getDrawable(context, R.drawable.default_pfp);
-             wvh.profilePic.setBorderColor(ContextCompat.getColor(context, R.color.background));
-             wvh.profilePic.setImageTintList(ColorStateList
-                     .valueOf(ContextCompat.getColor(context, R.color.black)));
-         }
+        if (item.get("pfp") != null && (int) item.get("pfp") != R.drawable.default_pfp) {
+            pfp = ContextCompat.getDrawable(context, (int) item.get("pfp"));
+        }
+        else {
+            pfp = ContextCompat.getDrawable(context, R.drawable.default_pfp);
+            wvh.profilePic.setBorderColor(ContextCompat.getColor(context, R.color.background));
+            wvh.profilePic.setImageTintList(ColorStateList
+                    .valueOf(ContextCompat.getColor(context, R.color.black)));
+        }
         wvh.profilePic.setImageDrawable(pfp);
 
         //username
-        String usernameStr = (item.get("username") != null)? item.get("username").toString() : "Habit Name";
+        String usernameStr = (item.get("username") != null) ? item.get("username").toString() : "Username";
         wvh.username.setText(usernameStr);
     }
 
@@ -205,7 +207,7 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
      * @param wvh view holder
      * @param item element of data
      */
-    private void setHabitNameAndIcon(final WallViewHolder wvh, HashMap<String, Object> item) {
+    private void setHabitNameAndIcon(final WallViewHolder wvh, Map<String, Object> item) {
         //name of habit
         String habitName = (item.get("habitName") != null)?
                 item.get("habitName").toString() : "Habit Name";
@@ -224,7 +226,7 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
      * @param wvh view holder
      * @param item element of data
      */
-    private void setStatistics(final WallViewHolder wvh, HashMap<String, Object> item) {
+    private void setStatistics(final WallViewHolder wvh, Map<String, Object> item) {
         //frequency
         String frequency = (item.get("frequency") != null)? item.get("frequency").toString() : "days";
         wvh.frequency.setText(frequency);
@@ -250,7 +252,7 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
      * @param wvh view holder
      * @param item element of data
      */
-    private void setCalendar(final WallViewHolder wvh, HashMap<String, Object> item) {
+    private void setCalendar(final WallViewHolder wvh, Map<String, Object> item) {
         CalendarDay[] dates = (CalendarDay[]) item.get("dates");
         if (dates == null || dates.length <= 0) return;
 
@@ -265,7 +267,7 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
      * @param wvh view holder
      * @param item element of data
      */
-    private void setChart(final WallViewHolder wvh, HashMap<String, Object> item) {
+    private void setChart(final WallViewHolder wvh, Map<String, Object> item) {
         //data
         List<SliceValue> pieData = new ArrayList<>();
         int grey = ContextCompat.getColor(context, R.color.pie_off);
@@ -321,6 +323,8 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
             @Override
             public boolean onLongClick(View view) {
                 wvh.expandButton.performClick();
+                ((Vibrator) context.getSystemService(VIBRATOR_SERVICE))
+                        .vibrate(VibrationEffect.createOneShot(10,25));
                 return false;
             }
         });
@@ -332,7 +336,7 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
      * @param wvh view holder
      * @param item element of data
      */
-    private void setLikePanel(final WallViewHolder wvh, final HashMap<String, Object> item) {
+    private void setLikePanel(final WallViewHolder wvh, final Map<String, Object> item) {
         //like listener
         wvh.likeIcon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

@@ -2,6 +2,7 @@ package com.example.habtrack;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -59,6 +61,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_login);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+
+        //set status bar to background color
+        Window window = getWindow();
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.background));
+        int uiFlag = this.getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK;
+        int darkFlag = Configuration.UI_MODE_NIGHT_YES;
+        window.getDecorView().setSystemUiVisibility((uiFlag == darkFlag)?
+                window.getDecorView().getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR:
+                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         //initialize welcome text
         TextView appName = (TextView) findViewById(R.id.app_name);

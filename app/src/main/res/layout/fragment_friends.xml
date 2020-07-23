@@ -1,8 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/main_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FriendsFragment">
+    tools:context=".FriendsFragment"
+    android:background="@color/purple">
 
-</FrameLayout>
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/purple">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_collapseMode="parallax">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/search"
+                    android:layout_width="0dp"
+                    app:layout_constraintWidth_percent="0.95"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:startIconDrawable="@drawable/search"
+                    app:startIconCheckable="true"
+                    app:startIconTint="@color/white"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/white"
+                    android:hint="@string/search"
+                    app:boxBackgroundMode="none"
+                    app:hintTextColor="@color/purple"
+                    app:hintAnimationEnabled="false"
+                    android:textColorHint="@color/white">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/search_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto"
+                        android:textSize="20sp"
+                        android:textColor="@color/white"
+                        android:inputType="textAutoComplete"
+                        android:imeOptions="actionSearch"
+                        android:textCursorDrawable="@null"
+                        android:maxLines="1" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/friends"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:background="@color/background" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

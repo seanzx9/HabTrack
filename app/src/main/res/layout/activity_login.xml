@@ -60,7 +60,7 @@
                 android:textColor="@color/text"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:inputType="textEmailAddress"
+                android:inputType="textEmailAddress|textAutoComplete"
                 android:imeOptions="actionDone"
                 android:maxLines="1" />
 

@@ -13,24 +13,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Map;
 
 public class WallFragment extends Fragment {
     private LinearLayoutManager llmVertical;
     private LinearLayoutManager llmHorizontal;
     private RecyclerView.Adapter<WallAdapter.WallViewHolder> adapterWall;
     private RecyclerView.Adapter<PersonalAdapter.PersonalViewHolder> adapterPersonal;
-    private ArrayList<HashMap<String, Object>> wallItems;
-    private ArrayList<HashMap<String, Object>> personalItems;
-    private ArrayList<HashMap<String, Object>> database; //test data
+    private ArrayList<Map<String, Object>> wallItems;
+    private ArrayList<Map<String, Object>> personalItems;
+    private ArrayList<Map<String, Object>> database; //test data
     private FirebaseAuth mAuth;
 
     public WallFragment() {}
@@ -58,10 +61,22 @@ public class WallFragment extends Fragment {
             }
         });
 
+        //initialize top bar color
+        final Window window = getActivity().getWindow();
+        final CoordinatorLayout cl = (CoordinatorLayout) view.findViewById(R.id.main_layout);
+        cl.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.purple));
+        window.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.purple));
+        window.getDecorView().setSystemUiVisibility(
+                view.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+
+        //welcome text animation
+        Animation enterTop = AnimationUtils.loadAnimation(getContext(), R.anim.fade_slide_from_top);
+        TextView welcome = (TextView) view.findViewById(R.id.welcome);
+        welcome.startAnimation(enterTop);
+
         //initialize arraylist for wall
         wallItems = new ArrayList<>();
         personalItems = new ArrayList<>();
-        database = new ArrayList<>();
         generateTestData();
         loadNextData(0);
 
@@ -94,9 +109,6 @@ public class WallFragment extends Fragment {
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 rvPersonal.setAlpha(1.0f - Math.abs(verticalOffset / (float)
                         appBarLayout.getTotalScrollRange()));
-
-                Window window = getActivity().getWindow();
-                CoordinatorLayout cl = (CoordinatorLayout) view.findViewById(R.id.main_layout);
 
                 if (rvPersonal.getAlpha() == 0.0) {
                     cl.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.background));
@@ -143,8 +155,11 @@ public class WallFragment extends Fragment {
      * Generates test data in place of database.
      */
     private void generateTestData() {
+        database = new ArrayList<>();
+
         //random data
-        String[] testUsername = {"john_smith", "jane_doe", "gurp956", "seanzx9", "jupy"};
+        String[] testUsername = {"gurp956", "seanzx9", "jupy", "john_smith", "jane_doe", "batman",
+                "superman123", "watermelon_lover12", "UsERnaMe", "adam_jones", "a_ham8"};
         String[] testHabits = {"Work Out", "Read", "Meditate", "Drink water", "Nap", "Eat fruit",
                 "Practice piano", "Work on project", "Finish essay", "Read the news"};
         int[] testIcons = {R.drawable.habit_alc, R.drawable.habit_baseball,
@@ -164,9 +179,9 @@ public class WallFragment extends Fragment {
 
         //generate random data for testing
         for (int i = 0; i <= 500; i++) {
-            HashMap<String, Object> item = new HashMap<>();
+            Map<String, Object> item = new HashMap<>();
             //item.put("pfp", R.drawable.default_pfp);
-            item.put("username", testUsername[(int)(Math.random() * 5)]);
+            item.put("username", testUsername[(int)(Math.random() * 11)]);
             item.put("iconId", testIcons[(int)(Math.random() * 14)]);
             item.put("habitName", testHabits[(int)(Math.random() * 10)]);
             int streak = (int)(Math.random() * 200) + 1;
@@ -181,7 +196,7 @@ public class WallFragment extends Fragment {
 
         //random data for personal habits
         for (int i = 0; i < 10; i++) {
-            HashMap<String, Object> item = new HashMap<>();
+            Map<String, Object> item = new HashMap<>();
             item.put("habitName", testHabits[(int)(Math.random() * 10)]);
             int streak = (int)(Math.random() * 200) + 1;
             item.put("curStreak", streak);
