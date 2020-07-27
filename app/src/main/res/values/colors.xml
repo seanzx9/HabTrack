@@ -9,17 +9,12 @@
     <color name="purple_black">#2E1D32</color>
     <color name="facebook_blue">#3B5998</color>
 
-    <color name="calendar_purple">#E5C7EC</color>
+    <color name="offset_purple">#EDDAF2</color>
     <color name="purple">#A947C2</color>
-    <color name="calendar_green">#D9F1D4</color>
     <color name="green">#43B929</color>
-    <color name="calendar_blue">#E8F2F8</color>
     <color name="blue">#90BEDE</color>
-    <color name="calendar_red">#FFE0E0</color>
     <color name="red">#E94F37</color>
-    <color name="calendar_yellow">#FEF4DA</color>
     <color name="yellow">#FCCA46</color>
-    <color name="calendar_black">#E6E6E6</color>
     <color name="black">#2A2828</color>
 
     <color name="background">#FFFFFF</color>

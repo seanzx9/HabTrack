@@ -28,9 +28,7 @@ import java.util.Map;
 
 public class WallFragment extends Fragment {
     private LinearLayoutManager llmVertical;
-    private LinearLayoutManager llmHorizontal;
     private RecyclerView.Adapter<WallAdapter.WallViewHolder> adapterWall;
-    private RecyclerView.Adapter<PersonalAdapter.PersonalViewHolder> adapterPersonal;
     private ArrayList<Map<String, Object>> wallItems;
     private ArrayList<Map<String, Object>> personalItems;
     private ArrayList<Map<String, Object>> database; //test data
@@ -82,28 +80,15 @@ public class WallFragment extends Fragment {
 
         //initialize personal RecyclerView
         final RecyclerView rvPersonal = (RecyclerView) view.findViewById(R.id.personal);
-        llmHorizontal = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager llmHorizontal = new LinearLayoutManager(getContext(),
+                LinearLayoutManager.HORIZONTAL, false);
         rvPersonal.setLayoutManager(llmHorizontal);
-        adapterPersonal = new PersonalAdapter(personalItems, llmHorizontal);
+        RecyclerView.Adapter<PersonalAdapter.PersonalViewHolder> adapterPersonal =
+                new PersonalAdapter(personalItems, llmHorizontal);
         rvPersonal.setAdapter(adapterPersonal);
 
-        //initialize wall RecyclerView
-        RecyclerView rvWall = (RecyclerView) view.findViewById(R.id.wall);
-        llmVertical = new LinearLayoutManager(getContext());
-        rvWall.setLayoutManager(llmVertical);
-        adapterWall = new WallAdapter(wallItems, llmVertical);
-        rvWall.setAdapter(adapterWall);
-
-        //lazy load wall items
-        rvWall.addOnScrollListener(new EndlessRecyclerViewScrollListener(llmVertical) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadNextData(page);
-            }
-        });
-
         //fade top on scroll
-        AppBarLayout appBar = (AppBarLayout) view.findViewById(R.id.app_bar);
+        final AppBarLayout appBar = (AppBarLayout) view.findViewById(R.id.app_bar);
         appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -127,7 +112,21 @@ public class WallFragment extends Fragment {
                     window.getDecorView().setSystemUiVisibility(
                             view.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                 }
+            }
+        });
 
+        //initialize wall RecyclerView
+        RecyclerView rvWall = (RecyclerView) view.findViewById(R.id.wall);
+        llmVertical = new LinearLayoutManager(getContext());
+        rvWall.setLayoutManager(llmVertical);
+        adapterWall = new WallAdapter(wallItems, llmVertical);
+        rvWall.setAdapter(adapterWall);
+
+        //lazy load wall items
+        rvWall.addOnScrollListener(new EndlessRecyclerViewScrollListener(llmVertical) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                loadNextData(page);
             }
         });
 

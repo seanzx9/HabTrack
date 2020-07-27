@@ -22,6 +22,7 @@
     <string name="facebook_sign_in">Sign in with Facebook</string>
     <string name="facebook_app_id">280991839980402</string>
     <string name="fb_login_protocol_scheme">fb280991839980402</string>
+
     <string name="habit_icon">Habit Icon</string>
     <string name="habit_name">Habit Name</string>
     <string name="zero">0</string>
@@ -40,5 +41,11 @@
 
     <string name="search">Search friends</string>
     <string name="remove">Remove</string>
+
+    <string name="options">Options</string>
+    <string name="mark_read">Mark as Read</string>
+    <string name="mark_unread">Mark as Unread</string>
+    <string name="delete">Delete</string>
+    <string name="date">Date</string>
 
 </resources>

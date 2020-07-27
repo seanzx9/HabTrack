@@ -56,7 +56,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
     }
 
     /**
-     * initialize components in card view
+     * Initialize components in card view
      */
     public static class FriendsViewHolder extends RecyclerView.ViewHolder {
         private CardView cardView;
@@ -76,62 +76,18 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
     /**
      * Fill the contents of the page with the appropriate data.
      *
-     * @param pvh view holder
+     * @param fvh view holder
      * @param position position in data
      */
     @Override
-    public void onBindViewHolder(final FriendsAdapter.FriendsViewHolder pvh, final int position) {
+    public void onBindViewHolder(final FriendsAdapter.FriendsViewHolder fvh, final int position) {
         final Map<String, Object> item = data.get(position);
-        context = pvh.cardView.getContext();
+        context = fvh.cardView.getContext();
 
-        pvh.setIsRecyclable(false);
+        fvh.setIsRecyclable(false);
 
-        //profile image
-        Drawable pfp;
-        if (item.get("pfp") != null && (int) item.get("pfp") != R.drawable.default_pfp) {
-            pfp = ContextCompat.getDrawable(context, (int) item.get("pfp"));
-        }
-        else {
-            pfp = ContextCompat.getDrawable(context, R.drawable.default_pfp);
-            pvh.profilePic.setBorderColor(ContextCompat.getColor(context, R.color.background));
-            pvh.profilePic.setImageTintList(ColorStateList
-                    .valueOf(ContextCompat.getColor(context, R.color.black)));
-        }
-        pvh.profilePic.setImageDrawable(pfp);
-
-        //username
-        final String usernameStr = (item.get("username") != null) ? item.get("username").toString() : "Username";
-        pvh.username.setText(usernameStr);
-
-        //remove click listener
-        pvh.remove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Context context = pvh.cardView.getContext();
-                Animation buttonPress = AnimationUtils.loadAnimation(context, R.anim.button_press);
-                pvh.remove.startAnimation(buttonPress);
-                ((Vibrator) context.getSystemService(VIBRATOR_SERVICE))
-                        .vibrate(VibrationEffect.createOneShot(10,25));
-
-                AlertDialog dialog = new AlertDialog.Builder(context)
-                        .setMessage("Are you sure you want to remove " + usernameStr + " as a friend?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                data.remove(pvh.getAdapterPosition());
-                                notifyDataSetChanged();
-                            }
-                        })
-
-                        // A null listener allows the button to dismiss the dialog and take no further action.
-                        .setNegativeButton(android.R.string.no, null)
-                        .setCancelable(true)
-                        .create();
-                dialog.getWindow().setBackgroundDrawable(ContextCompat
-                        .getDrawable(context, R.drawable.rounded_dialog));
-                dialog.show();
-                Button btn1 = (Button) dialog.findViewById(android.R.id.button1);
-            }
-        });
+        setProfile(fvh, item);
+        setRemoveBehavior(fvh, item);
     }
 
     /**
@@ -142,5 +98,68 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
     @Override
     public int getItemCount() {
         return data.size();
+    }
+
+    /**
+     * Sets the profile pic and username.
+     *
+     * @param fvh view holder
+     * @param item element of data
+     */
+    private void setProfile(FriendsViewHolder fvh, Map<String, Object> item) {
+        //profile pic
+        Drawable pfp;
+        if (item.get("pfp") != null && (int) item.get("pfp") != R.drawable.default_pfp) {
+            pfp = ContextCompat.getDrawable(context, (int) item.get("pfp"));
+        }
+        else {
+            pfp = ContextCompat.getDrawable(context, R.drawable.default_pfp);
+            fvh.profilePic.setBorderColor(ContextCompat.getColor(context, android.R.color.transparent));
+            fvh.profilePic.setImageTintList(ColorStateList
+                    .valueOf(ContextCompat.getColor(context, R.color.text)));
+        }
+        fvh.profilePic.setImageDrawable(pfp);
+
+        //username
+        String userStr = (item.get("username") != null)? item.get("username").toString() : "Username";
+        fvh.username.setText(userStr);
+    }
+
+    /**
+     * Sets listener for removing friend.
+     *
+     * @param fvh view holder
+     * @param item data
+     */
+    private void setRemoveBehavior(final FriendsViewHolder fvh, final Map<String, Object> item) {
+        fvh.remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Context context = fvh.cardView.getContext();
+                Animation buttonPress = AnimationUtils.loadAnimation(context, R.anim.button_press);
+                fvh.remove.startAnimation(buttonPress);
+                ((Vibrator) context.getSystemService(VIBRATOR_SERVICE))
+                        .vibrate(VibrationEffect.createOneShot(10,25));
+
+
+                String userStr = (item.get("username") != null)? item.get("username").toString() : "Username";
+
+                AlertDialog dialog = new AlertDialog.Builder(context)
+                        .setMessage("Are you sure you want to remove " + userStr + " as a friend?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                data.remove(fvh.getAdapterPosition());
+                                notifyDataSetChanged();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null)
+                        .setCancelable(true)
+                        .create();
+                dialog.getWindow().setBackgroundDrawable(ContextCompat
+                        .getDrawable(context, R.drawable.rounded_dialog));
+                dialog.show();
+                dialog.getWindow().setDimAmount(0.75f);
+            }
+        });
     }
 }

@@ -33,6 +33,7 @@ import androidx.core.view.GestureDetectorCompat;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
@@ -76,7 +77,7 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
     }
 
     /**
-     * initialize components in card view
+     * Initialize components in card view
      */
     public static class WallViewHolder extends RecyclerView.ViewHolder {
         private CardView cardView;
@@ -182,7 +183,7 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
      * @param wvh view holder
      * @param item element of data
      */
-    private void setProfile(final WallViewHolder wvh, Map<String, Object> item) {
+    private void setProfile(WallViewHolder wvh, Map<String, Object> item) {
         //profile image
         Drawable pfp;
         if (item.get("pfp") != null && (int) item.get("pfp") != R.drawable.default_pfp) {
@@ -190,15 +191,15 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
         }
         else {
             pfp = ContextCompat.getDrawable(context, R.drawable.default_pfp);
-            wvh.profilePic.setBorderColor(ContextCompat.getColor(context, R.color.background));
+            wvh.profilePic.setBorderColor(ContextCompat.getColor(context, android.R.color.transparent));
             wvh.profilePic.setImageTintList(ColorStateList
-                    .valueOf(ContextCompat.getColor(context, R.color.black)));
+                    .valueOf(ContextCompat.getColor(context, R.color.text)));
         }
         wvh.profilePic.setImageDrawable(pfp);
 
         //username
-        String usernameStr = (item.get("username") != null) ? item.get("username").toString() : "Username";
-        wvh.username.setText(usernameStr);
+        String usrStr = (item.get("username") != null)? item.get("username").toString() : "Username";
+        wvh.username.setText(usrStr);
     }
 
     /**
@@ -207,10 +208,9 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
      * @param wvh view holder
      * @param item element of data
      */
-    private void setHabitNameAndIcon(final WallViewHolder wvh, Map<String, Object> item) {
+    private void setHabitNameAndIcon(WallViewHolder wvh, Map<String, Object> item) {
         //name of habit
-        String habitName = (item.get("habitName") != null)?
-                item.get("habitName").toString() : "Habit Name";
+        String habitName = (item.get("habitName") != null)? item.get("habitName").toString() : "Habit Name";
         wvh.habitName.setText(habitName);
 
         //habit icon
@@ -226,7 +226,7 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
      * @param wvh view holder
      * @param item element of data
      */
-    private void setStatistics(final WallViewHolder wvh, Map<String, Object> item) {
+    private void setStatistics(WallViewHolder wvh, Map<String, Object> item) {
         //frequency
         String frequency = (item.get("frequency") != null)? item.get("frequency").toString() : "days";
         wvh.frequency.setText(frequency);
@@ -252,7 +252,7 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
      * @param wvh view holder
      * @param item element of data
      */
-    private void setCalendar(final WallViewHolder wvh, Map<String, Object> item) {
+    private void setCalendar(WallViewHolder wvh, Map<String, Object> item) {
         CalendarDay[] dates = (CalendarDay[]) item.get("dates");
         if (dates == null || dates.length <= 0) return;
 
@@ -267,12 +267,12 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
      * @param wvh view holder
      * @param item element of data
      */
-    private void setChart(final WallViewHolder wvh, Map<String, Object> item) {
+    private void setChart(WallViewHolder wvh, Map<String, Object> item) {
         //data
         List<SliceValue> pieData = new ArrayList<>();
         int grey = ContextCompat.getColor(context, R.color.pie_off);
         pieData.add(new SliceValue(17, grey));
-        pieData.add(new SliceValue(83, getColor(wvh, R.color.purple)));
+        pieData.add(new SliceValue(83, getColor(R.color.purple)));
 
         PieChartData pieChartData = new PieChartData(pieData);
         pieChartData.setHasCenterCircle(true).setCenterCircleScale(0.75f);
@@ -346,8 +346,8 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
                     wvh.likeIcon.setBackgroundTintList(ColorStateList.valueOf(purple));
                 }
                 else {
-                    int black = ContextCompat.getColor(context, R.color.black);
-                    wvh.likeIcon.setBackgroundTintList(ColorStateList.valueOf(black));
+                    int icon = ContextCompat.getColor(context, R.color.like_tint);
+                    wvh.likeIcon.setBackgroundTintList(ColorStateList.valueOf(icon));
                 }
             }
         });
@@ -373,11 +373,10 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
     /**
      * Gets color by id.
      *
-     * @param wvh view holder
      * @param id color id
      * @return color from id
      */
-    private int getColor(final WallViewHolder wvh, int id) {
+    private int getColor(int id) {
         return ContextCompat.getColor(context, id);
     }
 

@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.checkbox.MaterialCheckBox;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class PersonalAdapter extends RecyclerView.Adapter<PersonalAdapter.PersonalViewHolder> {
@@ -52,7 +53,7 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalAdapter.Person
     }
 
     /**
-     * initialize components in card view
+     * Initialize components in card view
      */
     public static class PersonalViewHolder extends RecyclerView.ViewHolder {
         private CardView cardView;
@@ -82,6 +83,27 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalAdapter.Person
 
         pvh.setIsRecyclable(false);
 
+        setHabit(pvh, item);
+        setClickBehavior(pvh);
+    }
+
+    /**
+     * Getter for the size of the data.
+     *
+     * @return number of components in the data
+     */
+    @Override
+    public int getItemCount() {
+        return data.size();
+    }
+
+    /**
+     * Sets habit name and streak.
+     *
+     * @param pvh view holder
+     * @param item element of data
+     */
+    private void setHabit(PersonalViewHolder pvh, Map<String, Object> item) {
         //name of habit
         String habitName = (item.get("habitName") != null)?
                 item.get("habitName").toString() : "Habit Name";
@@ -91,8 +113,14 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalAdapter.Person
         String streakNum = (item.get("curStreak") != null)? item.get("curStreak").toString() : "0";
         String frequency = (item.get("frequency") != null)? item.get("frequency").toString() : "days";
         pvh.streak.setText(streakNum + " " + frequency);
+    }
 
-        //click listener
+    /**
+     * Sets listened for card view.
+     *
+     * @param pvh view holder
+     */
+    private void setClickBehavior(final PersonalViewHolder pvh) {
         pvh.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -128,15 +156,5 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalAdapter.Person
                 pvh.cardView.startAnimation(buttonPress);
             }
         });
-    }
-
-    /**
-     * Getter for the size of the data.
-     *
-     * @return number of components in the data
-     */
-    @Override
-    public int getItemCount() {
-        return data.size();
     }
 }

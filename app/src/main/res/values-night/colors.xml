@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="calendar_purple">#A947C2</color>
+    <color name="offset_purple">#32153A</color>
     <color name="purple">#A947C2</color>
 
     <color name="background">#100713</color>
@@ -14,6 +14,6 @@
     <color name="text">#F1F1F1</color>
     <color name="hint">#514F4F</color>
     <color name="nav_tint">#BABDBD</color>
-    <color name="icon_tint">#FFFFFF</color>
+    <color name="icon_tint">#F2F2F2</color>
     <color name="pie_off">#1F1E1E</color>
 </resources>
