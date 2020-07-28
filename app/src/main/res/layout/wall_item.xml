@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="10dp"
-    android:layout_marginTop="20dp"
+    android:layout_marginVertical="12dp"
     app:cardElevation="12dp"
     app:cardCornerRadius="15dp"
     android:outlineSpotShadowColor="@color/shadow"
@@ -270,7 +270,7 @@
             app:layout_constraintTop_toBottomOf="@id/expand_container"
             app:layout_constraintBottom_toTopOf="@id/like_icon"/>
 
-        <ToggleButton
+        <ImageButton
             android:id="@+id/like_icon"
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -278,7 +278,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             android:textOff="@null"
             android:textOn="@null"
-            android:backgroundTint="@color/like_tint"
+            android:backgroundTint="@color/icon_tint"
             android:background="@drawable/like_icon"/>
 
         <TextView

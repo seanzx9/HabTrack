@@ -168,13 +168,11 @@ public class WallFragment extends Fragment {
                 R.drawable.habit_food, R.drawable.habit_money, R.drawable.habit_leaf};
         String[] testFrequency = {"days", "weeks", "months"};
         Boolean[] likedArray = {true, false};
-        CalendarDay[] dates = {
-                CalendarDay.from(2020, 7, 10),
-                CalendarDay.from(2020, 7, 12),
-                CalendarDay.from(2020, 7, 14),
-                CalendarDay.from(2020, 7, 15),
-                CalendarDay.from(2020, 7, 17)
-        };
+        ArrayList<CalendarDay> dates = new ArrayList<>();
+        dates.add(CalendarDay.from(2020, 7, 20));
+        dates.add(CalendarDay.from(2020, 7, 23));
+        dates.add(CalendarDay.from(2020, 7, 24));
+        dates.add(CalendarDay.from(2020, 7, 26));
 
         //generate random data for testing
         for (int i = 0; i <= 500; i++) {
@@ -195,6 +193,11 @@ public class WallFragment extends Fragment {
 
         //random data for personal habits
         for (int i = 0; i < 10; i++) {
+            dates = new ArrayList<>();
+            dates.add(CalendarDay.from(2020, 7, 20));
+            dates.add(CalendarDay.from(2020, 7, 23));
+            dates.add(CalendarDay.from(2020, 7, 24));
+            dates.add(CalendarDay.from(2020, 7, 26));
             Map<String, Object> item = new HashMap<>();
             item.put("habitName", testHabits[(int)(Math.random() * 10)]);
             int streak = (int)(Math.random() * 200) + 1;

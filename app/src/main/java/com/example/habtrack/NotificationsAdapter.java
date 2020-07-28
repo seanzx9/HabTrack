@@ -52,11 +52,12 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     /**
      * Initialize components in card view
      */
-    public static class NotificationsViewHolder extends RecyclerView.ViewHolder {
+    public class NotificationsViewHolder extends RecyclerView.ViewHolder {
         private CardView cardView;
         private ConstraintLayout card;
         private CircleImageView profilePic;
         private TextView message;
+        private TextView date;
         private ImageButton options;
 
         public NotificationsViewHolder(View v) {
@@ -65,11 +66,45 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
             card = (ConstraintLayout) v.findViewById(R.id.card);
             profilePic = (CircleImageView) v.findViewById(R.id.profile_pic);
             message = (TextView) v.findViewById(R.id.message);
+            date = (TextView) v.findViewById(R.id.date);
             options = (ImageButton) v.findViewById(R.id.options);
-        }
-    }
-    private void test() {
 
+            //notification options pop up
+            options.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PopupMenu popup = new PopupMenu(context, options);
+
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem option) {
+                            int pos = getAdapterPosition();
+                            switch (option.getItemId()) {
+                                case R.id.mark_read:
+                                    Map<String, Object> item = data.get(pos);
+                                    boolean isRead = getIsRead(pos);
+                                    item.put("isRead", !isRead);
+                                    data.set(pos, item);
+                                    notifyItemChanged(pos);
+                                    return true;
+                                case R.id.delete:
+                                    data.remove(pos);
+                                    notifyItemRemoved(pos);
+                                    notifyItemRangeChanged(pos, getItemCount());
+                                    return true;
+                                default:
+                                    return false;
+                            }
+                        }
+                    });
+
+                    popup.inflate(R.menu.notification_options);
+                    if (getIsRead(getAdapterPosition()))
+                        popup.getMenu().getItem(0).setTitle(R.string.mark_unread);
+                    popup.show();
+                }
+            });
+        }
     }
 
     /**
@@ -83,11 +118,10 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         final Map<String, Object> item = data.get(position);
         context = nvh.cardView.getContext();
 
-        nvh.setIsRecyclable(false);
-
         setPic(nvh, item);
         setMessage(nvh, item);
-        setOptions(nvh, item);
+        setDate(nvh, item);
+        setOptionsColor(nvh);
     }
 
     /**
@@ -101,10 +135,22 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     }
 
     /**
+     * Checks if notification is read
+     *
+     * @param pos position of view
+     * @return true if read, false if not
+     */
+    private boolean getIsRead(int pos) {
+        final Map<String, Object> item = data.get(pos);
+        return (item.get("isRead") != null) && (boolean) item.get("isRead");
+    }
+
+    /**
      * Sets pic for notification.
      *
      * @param nvh view holder
      * @param item element of data
+     *
      */
     private void setPic(NotificationsViewHolder nvh, Map<String, Object> item) {
         Drawable pfp;
@@ -142,52 +188,23 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     }
 
     /**
-     * Sets up and handles options for notifications.
+     * Sets the date of the notification.
      *
      * @param nvh view holder
      * @param item element of data
      */
-    private void setOptions(final NotificationsViewHolder nvh, final Map<String, Object> item) {
-        //set card color
-        final boolean isRead = (item.get("isRead") != null) && (boolean) item.get("isRead");
+    private void setDate(NotificationsViewHolder nvh, Map<String, Object> item) {
+        String dateStr = (item.get("date") != null)? item.get("date").toString() : "Date";
+        nvh.date.setText(dateStr);
+    }
+
+    /**
+     * Sets up and handles options for notifications.
+     *
+     * @param nvh view holder
+     */
+    private void setOptionsColor(final NotificationsViewHolder nvh) {
         nvh.card.setBackgroundColor(ContextCompat.getColor(context,
-                (isRead)? R.color.card : R.color.offset_purple));
-
-        //menu options
-        nvh.options.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PopupMenu popup = new PopupMenu(context, nvh.options);
-
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem option) {
-                        switch (option.getItemId()) {
-                            case R.id.mark_read:
-                                boolean comRead = !isRead;
-                                nvh.card.setBackgroundColor(ContextCompat.getColor(context,
-                                        (comRead)? R.color.card : R.color.offset_purple));
-                                Map<String, Object> newItem = item;
-                                newItem.put("isRead", comRead);
-                                data.set(nvh.getAdapterPosition(), newItem);
-                                notifyDataSetChanged();
-                                return true;
-                            case R.id.delete:
-                                int pos = nvh.getAdapterPosition();
-                                data.remove(pos);
-                                notifyItemRemoved(pos);
-                                notifyItemRangeChanged(pos, getItemCount());
-                                return true;
-                            default:
-                                return false;
-                        }
-                    }
-                });
-
-                popup.inflate(R.menu.notification_options);
-                if (isRead) popup.getMenu().getItem(0).setTitle(R.string.mark_unread);
-                popup.show();
-            }
-        });
+                (getIsRead(nvh.getAdapterPosition()))? R.color.card : R.color.offset_purple));
     }
 }

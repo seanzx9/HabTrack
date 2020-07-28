@@ -9,6 +9,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.cardview.widget.CardView;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.checkbox.MaterialCheckBox;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,7 +57,7 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalAdapter.Person
     /**
      * Initialize components in card view
      */
-    public static class PersonalViewHolder extends RecyclerView.ViewHolder {
+    public class PersonalViewHolder extends RecyclerView.ViewHolder {
         private CardView cardView;
         private ConstraintLayout card;
         private TextView habitName;
@@ -67,6 +69,53 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalAdapter.Person
             card = (ConstraintLayout) v.findViewById(R.id.card);
             habitName = (TextView) v.findViewById(R.id.habit_name);
             streak = (TextView) v.findViewById(R.id.streak);
+            context = cardView.getContext();
+
+            //checks off habit for day
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Animation buttonPress = AnimationUtils.loadAnimation(context, R.anim.button_press);
+
+                    buttonPress.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {}
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            int pos = getLayoutPosition();
+                            Map<String, Object> item = data.get(pos);
+                            ArrayList<CalendarDay> dates = getDates(pos);
+
+                            //add today's date to item
+                            boolean containsToday = dates.contains(CalendarDay.today());
+                            if (containsToday)
+                                dates.remove(CalendarDay.today());
+                            else
+                                dates.add(CalendarDay.today());
+
+                            //sets the dates
+                            item.put("dates", dates);
+                            data.set(pos, item);
+                            notifyItemChanged(pos);
+
+                            //move item
+                            data.remove(item);
+                            if (containsToday)
+                                data.add(0, item);
+                            else
+                                data.add(item);
+                            notifyItemMoved(pos, data.size() - 1);
+                            layoutManager.scrollToPosition(0);
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {}
+                    });
+
+                    cardView.startAnimation(buttonPress);
+                }
+            });
         }
     }
 
@@ -79,12 +128,9 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalAdapter.Person
     @Override
     public void onBindViewHolder(final PersonalAdapter.PersonalViewHolder pvh, final int position) {
         final Map<String, Object> item = data.get(position);
-        context = pvh.cardView.getContext();
-
-        pvh.setIsRecyclable(false);
 
         setHabit(pvh, item);
-        setClickBehavior(pvh);
+        setChecked(pvh);
     }
 
     /**
@@ -95,6 +141,24 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalAdapter.Person
     @Override
     public int getItemCount() {
         return data.size();
+    }
+
+    private ArrayList<CalendarDay> getDates(int pos) {
+        final Map<String, Object> item = data.get(pos);
+        return (ArrayList<CalendarDay>) item.get("dates");
+    }
+
+    /**
+     * Checks the habit as complete or not.
+     *
+     * @param item element of data
+     * @param pos position in view
+     * @return updated item
+     */
+    private Map<String, Object> updateHabit(Map<String, Object> item, int pos) {
+
+
+        return item;
     }
 
     /**
@@ -116,45 +180,24 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalAdapter.Person
     }
 
     /**
-     * Sets listened for card view.
+     * Sets habit name and streak.
      *
      * @param pvh view holder
      */
-    private void setClickBehavior(final PersonalViewHolder pvh) {
-        pvh.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Animation buttonPress = AnimationUtils.loadAnimation(context, R.anim.button_press);
+    private void setChecked(PersonalViewHolder pvh) {
+        ArrayList<CalendarDay> dates = getDates(pvh.getAdapterPosition());
+        if (dates == null || dates.size() <= 0) return;
 
-                buttonPress.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {}
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        data.add(data.remove(pvh.getAdapterPosition()));
-                        notifyItemMoved(pvh.getAdapterPosition(), data.size() - 1);
-                        layoutManager.scrollToPosition(0);
-
-                        int hintColor = ContextCompat.getColor(context, R.color.hint);
-                        if (pvh.habitName.getCurrentTextColor() != hintColor) {
-                            pvh.card.setBackgroundColor(ContextCompat.getColor(context, R.color.checked));
-                            pvh.habitName.setTextColor(ContextCompat.getColor(context, R.color.hint));
-                            pvh.streak.setTextColor(ContextCompat.getColor(context, R.color.hint));
-                        }
-                        else {
-                            pvh.card.setBackgroundColor(ContextCompat.getColor(context, R.color.card));
-                            pvh.habitName.setTextColor(ContextCompat.getColor(context, R.color.text));
-                            pvh.streak.setTextColor(ContextCompat.getColor(context, R.color.text));
-                        }
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {}
-                });
-
-                pvh.cardView.startAnimation(buttonPress);
-            }
-        });
+        boolean isComplete = dates.get(dates.size() - 1).equals(CalendarDay.today());
+        if (isComplete) {
+            pvh.card.setBackgroundColor(ContextCompat.getColor(context, R.color.checked));
+            pvh.habitName.setTextColor(ContextCompat.getColor(context, R.color.hint));
+            pvh.streak.setTextColor(ContextCompat.getColor(context, R.color.hint));
+        }
+        else {
+            pvh.card.setBackgroundColor(ContextCompat.getColor(context, R.color.card));
+            pvh.habitName.setTextColor(ContextCompat.getColor(context, R.color.text));
+            pvh.streak.setTextColor(ContextCompat.getColor(context, R.color.text));
+        }
     }
 }

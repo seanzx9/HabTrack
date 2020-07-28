@@ -58,7 +58,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
     /**
      * Initialize components in card view
      */
-    public static class FriendsViewHolder extends RecyclerView.ViewHolder {
+    public class FriendsViewHolder extends RecyclerView.ViewHolder {
         private CardView cardView;
         private CircleImageView profilePic;
         private TextView username;
@@ -70,6 +70,39 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
             profilePic = (CircleImageView) v.findViewById(R.id.profile_pic);
             username = (TextView) v.findViewById(R.id.username);
             remove = (ConstraintLayout) v.findViewById(R.id.remove);
+            context = cardView.getContext();
+
+            //remove friend
+            remove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final int pos = getLayoutPosition();
+                    Animation buttonPress = AnimationUtils.loadAnimation(context, R.anim.button_press);
+                    remove.startAnimation(buttonPress);
+                    ((Vibrator) context.getSystemService(VIBRATOR_SERVICE))
+                            .vibrate(VibrationEffect.createOneShot(10,25));
+
+                    Map<String, Object> item = data.get(pos);
+                    String userStr = (item.get("username") != null)? item.get("username").toString() : "Username";
+
+                    AlertDialog dialog = new AlertDialog.Builder(context)
+                            .setMessage("Are you sure you want to remove " + userStr + " as a friend?")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                data.remove(pos);
+                                notifyItemRemoved(pos);
+                                notifyItemRangeChanged(pos, getItemCount());
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, null)
+                            .setCancelable(true)
+                            .create();
+                    dialog.getWindow().setBackgroundDrawable(ContextCompat
+                            .getDrawable(context, R.drawable.rounded_dialog));
+                    dialog.show();
+                    dialog.getWindow().setDimAmount(0.75f);
+                }
+            });
         }
     }
 
@@ -84,10 +117,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
         final Map<String, Object> item = data.get(position);
         context = fvh.cardView.getContext();
 
-        fvh.setIsRecyclable(false);
-
         setProfile(fvh, item);
-        setRemoveBehavior(fvh, item);
     }
 
     /**
@@ -123,43 +153,5 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
         //username
         String userStr = (item.get("username") != null)? item.get("username").toString() : "Username";
         fvh.username.setText(userStr);
-    }
-
-    /**
-     * Sets listener for removing friend.
-     *
-     * @param fvh view holder
-     * @param item data
-     */
-    private void setRemoveBehavior(final FriendsViewHolder fvh, final Map<String, Object> item) {
-        fvh.remove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Context context = fvh.cardView.getContext();
-                Animation buttonPress = AnimationUtils.loadAnimation(context, R.anim.button_press);
-                fvh.remove.startAnimation(buttonPress);
-                ((Vibrator) context.getSystemService(VIBRATOR_SERVICE))
-                        .vibrate(VibrationEffect.createOneShot(10,25));
-
-
-                String userStr = (item.get("username") != null)? item.get("username").toString() : "Username";
-
-                AlertDialog dialog = new AlertDialog.Builder(context)
-                        .setMessage("Are you sure you want to remove " + userStr + " as a friend?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                data.remove(fvh.getAdapterPosition());
-                                notifyDataSetChanged();
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, null)
-                        .setCancelable(true)
-                        .create();
-                dialog.getWindow().setBackgroundDrawable(ContextCompat
-                        .getDrawable(context, R.drawable.rounded_dialog));
-                dialog.show();
-                dialog.getWindow().setDimAmount(0.75f);
-            }
-        });
     }
 }
