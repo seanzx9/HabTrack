@@ -42,8 +42,6 @@ public class NotificationsFragment extends Fragment {
 
         //initialize top bar color
         final Window window = getActivity().getWindow();
-        final ConstraintLayout cl = (ConstraintLayout) view.findViewById(R.id.main_layout);
-        cl.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.purple));
         window.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.purple));
         window.getDecorView().setSystemUiVisibility(
                 view.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);

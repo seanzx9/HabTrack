@@ -24,11 +24,10 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map;
 
 public class WallFragment extends Fragment {
     private LinearLayoutManager llmVertical;
-    private RecyclerView.Adapter<WallAdapter.WallViewHolder> adapterWall;
+    private RecyclerView.Adapter<HabitAdapter.HabitViewHolder> adapterWall;
     private ArrayList<Map<String, Object>> wallItems;
     private ArrayList<Map<String, Object>> personalItems;
     private ArrayList<Map<String, Object>> database; //test data
@@ -119,7 +118,7 @@ public class WallFragment extends Fragment {
         RecyclerView rvWall = (RecyclerView) view.findViewById(R.id.wall);
         llmVertical = new LinearLayoutManager(getContext());
         rvWall.setLayoutManager(llmVertical);
-        adapterWall = new WallAdapter(wallItems, llmVertical);
+        adapterWall = new HabitAdapter(wallItems, llmVertical);
         rvWall.setAdapter(adapterWall);
 
         //lazy load wall items

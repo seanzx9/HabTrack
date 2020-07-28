@@ -2,6 +2,7 @@ package com.example.habtrack;
 
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -29,8 +30,6 @@ public class ProfileFragment extends Fragment {
 
         //initialize top bar color
         final Window window = getActivity().getWindow();
-        final CoordinatorLayout cl = (CoordinatorLayout) view.findViewById(R.id.main_layout);
-        cl.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.purple));
         window.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.purple));
         window.getDecorView().setSystemUiVisibility(
                 view.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
