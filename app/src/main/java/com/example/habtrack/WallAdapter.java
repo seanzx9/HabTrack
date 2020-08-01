@@ -39,7 +39,7 @@ import lecho.lib.hellocharts.model.SliceValue;
 import lecho.lib.hellocharts.view.PieChartView;
 import static android.content.Context.VIBRATOR_SERVICE;
 
-public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.HabitViewHolder> {
+public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder> {
     private ArrayList<Map<String, Object>> data;
     private RecyclerView.LayoutManager layoutManager;
     private Context context;
@@ -49,7 +49,7 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.HabitViewHol
      *
      * @param data data to update wall with
      */
-    public HabitAdapter(ArrayList<Map<String, Object>> data, RecyclerView.LayoutManager lm) {
+    public WallAdapter(ArrayList<Map<String, Object>> data, RecyclerView.LayoutManager lm) {
         this.data = data;
         this.layoutManager = lm;
     }
@@ -62,17 +62,16 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.HabitViewHol
      * @return new WallViewHolder
      */
     @Override
-    public HabitViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public WallViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.habit_item, parent, false);
-        return new HabitViewHolder(v);
+                .inflate(R.layout.wall_item, parent, false);
+        return new WallViewHolder(v);
     }
 
     /**
      * Initialize components in card view
      */
-    public class HabitViewHolder extends RecyclerView.ViewHolder {
-        private CardView cardView;
+    public class WallViewHolder extends RecyclerView.ViewHolder {
         private ConstraintLayout card;
         private CircleImageView profilePic;
         private TextView username;
@@ -92,9 +91,9 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.HabitViewHol
         private TextView likes;
         private ToggleButton expandButton;
 
-        public HabitViewHolder(View v) {
+        public WallViewHolder(View v) {
             super(v);
-            cardView = (CardView) v.findViewById(R.id.card_view);
+            CardView cardView = (CardView) v.findViewById(R.id.card_view);
             card = (ConstraintLayout) v.findViewById(R.id.card);
             profilePic = (CircleImageView) v.findViewById(R.id.profile_pic);
             username = (TextView) v.findViewById(R.id.username);
@@ -251,19 +250,19 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.HabitViewHol
     /**
      * Fill the contents of the page with the appropriate data.
      *
-     * @param hvh view holder
+     * @param wvh view holder
      * @param position position in data
      */
     @Override
-    public void onBindViewHolder(final HabitViewHolder hvh, final int position) {
+    public void onBindViewHolder(final WallViewHolder wvh, final int position) {
         final Map<String, Object> item = data.get(position);
 
-        setProfile(hvh, item);
-        setHabitNameAndIcon(hvh, item);
-        setStatistics(hvh, item);
-        setCalendar(hvh, item);
-        setChart(hvh, item);
-        setLikePanel(hvh, item);
+        setProfile(wvh, item);
+        setHabitNameAndIcon(wvh, item);
+        setStatistics(wvh, item);
+        setCalendar(wvh, item);
+        setChart(wvh, item);
+        setLikePanel(wvh, item);
     }
 
     /**
@@ -279,10 +278,10 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.HabitViewHol
     /**
      * Sets profile image and username of habit's creator.
      *
-     * @param hvh view holder
+     * @param wvh view holder
      * @param item element of data
      */
-    private void setProfile(HabitViewHolder hvh, Map<String, Object> item) {
+    private void setProfile(WallViewHolder wvh, Map<String, Object> item) {
         //profile image
         Drawable pfp;
         if (item.get("pfp") != null && (int) item.get("pfp") != R.drawable.default_pfp) {
@@ -290,127 +289,117 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.HabitViewHol
         }
         else {
             pfp = ContextCompat.getDrawable(context, R.drawable.default_pfp);
-            hvh.profilePic.setBorderColor(getColor(android.R.color.transparent));
-            hvh.profilePic.setImageTintList(ColorStateList.valueOf(getColor(R.color.text)));
+            wvh.profilePic.setImageTintList(ColorStateList
+                    .valueOf(ContextCompat.getColor(context, R.color.text)));
         }
-        hvh.profilePic.setImageDrawable(pfp);
+        wvh.profilePic.setImageDrawable(pfp);
 
         //username
         String usrStr = (item.get("username") != null)? item.get("username").toString() : "Username";
-        hvh.username.setText(usrStr);
+        wvh.username.setText(usrStr);
     }
 
     /**
      * Sets habit name and icon.
      *
-     * @param hvh view holder
+     * @param wvh view holder
      * @param item element of data
      */
-    private void setHabitNameAndIcon(HabitViewHolder hvh, Map<String, Object> item) {
+    private void setHabitNameAndIcon(WallViewHolder wvh, Map<String, Object> item) {
         //name of habit
         String habitName = (item.get("habitName") != null)? item.get("habitName").toString() : "Habit Name";
-        hvh.habitName.setText(habitName);
+        wvh.habitName.setText(habitName);
 
         //habit icon
         Drawable habitIcon = (item.get("iconId") != null)?
                 ContextCompat.getDrawable(context, (int) item.get("iconId")):
                 ContextCompat.getDrawable(context, R.drawable.app_icon);
-        hvh.habitIcon.setImageDrawable(habitIcon);
+        wvh.habitIcon.setImageDrawable(habitIcon);
     }
 
     /**
      * Sets current streak, best streak, total, and date started.
      *
-     * @param hvh view holder
+     * @param wvh view holder
      * @param item element of data
      */
-    private void setStatistics(HabitViewHolder hvh, Map<String, Object> item) {
+    private void setStatistics(WallViewHolder wvh, Map<String, Object> item) {
         //frequency
         String frequency = (item.get("frequency") != null)? item.get("frequency").toString() : "days";
-        hvh.frequency.setText(frequency);
-        hvh.bestFrequency.setText(frequency);
-        hvh.totalFrequency.setText(frequency);
+        wvh.frequency.setText(frequency);
+        wvh.bestFrequency.setText(frequency);
+        wvh.totalFrequency.setText(frequency);
 
         //current streak of habit
         String curStreakNum = (item.get("curStreak") != null)? item.get("curStreak").toString() : "0";
-        hvh.streak.setText(curStreakNum);
+        wvh.streak.setText(curStreakNum);
 
         //best streak of habit
         String bestStreakNum = (item.get("bestStreak") != null)? item.get("bestStreak").toString() : "0";
-        hvh.bestStreak.setText(bestStreakNum);
+        wvh.bestStreak.setText(bestStreakNum);
 
         //total
         String totalNum = (item.get("total") != null)? item.get("total").toString() : "0";
-        hvh.total.setText(totalNum);
+        wvh.total.setText(totalNum);
     }
 
     /**
      * Sets calender view.
      *
-     * @param hvh view holder
+     * @param wvh view holder
      * @param item element of data
      */
-    private void setCalendar(HabitViewHolder hvh, Map<String, Object> item) {
+    private void setCalendar(WallViewHolder wvh, Map<String, Object> item) {
         ArrayList<CalendarDay> dates = (ArrayList<CalendarDay>) item.get("dates");
         if (dates == null || dates.size() <= 0) return;
 
         //select days
         for (CalendarDay date : dates)
-            hvh.mcv.setDateSelected(date, true);
+            wvh.mcv.setDateSelected(date, true);
     }
 
     /**
      * Sets pie chart data.
      *
-     * @param hvh view holder
+     * @param wvh view holder
      * @param item element of data
      */
-    private void setChart(HabitViewHolder hvh, Map<String, Object> item) {
+    private void setChart(WallViewHolder wvh, Map<String, Object> item) {
         //data
         List<SliceValue> pieData = new ArrayList<>();
-        int grey = getColor(R.color.pie_off);
+        int grey = ContextCompat.getColor(context, R.color.pie_off);
         pieData.add(new SliceValue(17, grey));
-        pieData.add(new SliceValue(83, getColor(R.color.purple)));
+        pieData.add(new SliceValue(83, ContextCompat.getColor(context, R.color.purple)));
 
         PieChartData pieChartData = new PieChartData(pieData);
         pieChartData.setHasCenterCircle(true).setCenterCircleScale(0.75f);
-        hvh.chart.setPieChartData(pieChartData);
+        wvh.chart.setPieChartData(pieChartData);
     }
 
     /**
      * Sets like button toggle and number of likes.
      *
-     * @param hvh view holder
+     * @param wvh view holder
      * @param item element of data
      */
-    private void setLikePanel(final HabitViewHolder hvh, final Map<String, Object> item) {
+    private void setLikePanel(final WallViewHolder wvh, final Map<String, Object> item) {
         //like toggle
         boolean isLiked = (item.get("isLiked") != null) && (boolean) item.get("isLiked");
         if (isLiked) {
             int purple = ContextCompat.getColor(context, R.color.purple);
-            hvh.likeIcon.setBackgroundTintList(ColorStateList.valueOf(purple));
-            hvh.likeIcon.setBackground(ContextCompat.getDrawable(context, R.drawable.heart_on));
+            wvh.likeIcon.setBackgroundTintList(ColorStateList.valueOf(purple));
+            wvh.likeIcon.setBackground(ContextCompat.getDrawable(context, R.drawable.heart_on));
         }
         else {
             int icon = ContextCompat.getColor(context, R.color.icon_tint);
-            hvh.likeIcon.setBackgroundTintList(ColorStateList.valueOf(icon));
-            hvh.likeIcon.setBackground(ContextCompat.getDrawable(context, R.drawable.heart_off));
+            wvh.likeIcon.setBackgroundTintList(ColorStateList.valueOf(icon));
+            wvh.likeIcon.setBackground(ContextCompat.getDrawable(context, R.drawable.heart_off));
         }
 
         //number of likes
         String likesNum = (item.get("likes") != null)?
                 item.get("likes").toString() : "0";
         String likeStr = likesNum + " likes";
-        hvh.likes.setText(likeStr);
-    }
-
-    /**
-     * Gets color by id.
-     *
-     * @param id color id
-     * @return color from id
-     */
-    private int getColor(int id) {
-        return ContextCompat.getColor(context, id);
+        wvh.likes.setText(likeStr);
     }
 }

@@ -15,6 +15,7 @@
         android:background="@color/purple">
 
         <TextView
+            android:id="@+id/notifications_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
@@ -39,6 +40,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:overScrollMode="never"
         android:scrollbars="none"
+        android:layoutAnimation="@anim/layout_enter_from_bottom"
         android:background="@color/background" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

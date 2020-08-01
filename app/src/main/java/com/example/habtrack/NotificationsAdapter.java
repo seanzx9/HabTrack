@@ -1,5 +1,6 @@
 package com.example.habtrack;
 
+import android.app.ListActivity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
@@ -9,11 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.PopupMenu;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Map;
@@ -78,7 +81,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem option) {
-                            int pos = getAdapterPosition();
+                            int pos = getLayoutPosition();
                             switch (option.getItemId()) {
                                 case R.id.mark_read:
                                     Map<String, Object> item = data.get(pos);
@@ -99,7 +102,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
                     });
 
                     popup.inflate(R.menu.notification_options);
-                    if (getIsRead(getAdapterPosition()))
+                    if (getIsRead(getLayoutPosition()))
                         popup.getMenu().getItem(0).setTitle(R.string.mark_unread);
                     popup.show();
                 }
@@ -159,7 +162,6 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         }
         else {
             pfp = ContextCompat.getDrawable(context, R.drawable.default_pfp);
-            nvh.profilePic.setBorderColor(ContextCompat.getColor(context, android.R.color.transparent));
             nvh.profilePic.setImageTintList(ColorStateList
                     .valueOf(ContextCompat.getColor(context, R.color.text)));
         }

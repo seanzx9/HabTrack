@@ -1,5 +1,6 @@
 package com.example.habtrack;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -18,7 +19,10 @@ import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,13 +48,17 @@ public class FriendsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_friends, container, false);
+        final View view = inflater.inflate(R.layout.fragment_friends, container, false);
 
         //initialize top bar color
         final Window window = getActivity().getWindow();
-        window.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.purple));
-        window.getDecorView().setSystemUiVisibility(
-                view.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        window.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.background));
+        int uiFlag = getContext().getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK;
+        int darkFlag = Configuration.UI_MODE_NIGHT_YES;
+        window.getDecorView().setSystemUiVisibility((uiFlag == darkFlag)?
+                view.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR:
+                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         //initialize arraylist for grid
         friendsItems = new ArrayList<>();
@@ -58,12 +66,12 @@ public class FriendsFragment extends Fragment {
         generateTestData();
         loadData();
 
-        //initialize wall RecyclerView
-        RecyclerView rvWall = (RecyclerView) view.findViewById(R.id.friends);
+        //initialize friends RecyclerView
+        final RecyclerView rvFriends = (RecyclerView) view.findViewById(R.id.friends);
         glm = new GridLayoutManager(getContext(), 2);
-        rvWall.setLayoutManager(glm);
+        rvFriends.setLayoutManager(glm);
         adapterFriends = new FriendsAdapter(filteredItems);
-        rvWall.setAdapter(adapterFriends);
+        rvFriends.setAdapter(adapterFriends);
 
         //search bar
         filter("");
@@ -82,6 +90,17 @@ public class FriendsFragment extends Fragment {
                 filter(str);
                 adapterFriends.notifyDataSetChanged();
                 glm.scrollToPosition(0);
+            }
+        });
+
+        //fade top on scroll
+        final AppBarLayout appBar = (AppBarLayout) view.findViewById(R.id.app_bar);
+        appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                TextInputLayout search = (TextInputLayout) view.findViewById(R.id.search);
+                search.setAlpha(1.0f - Math.abs(verticalOffset / (float)
+                        appBarLayout.getTotalScrollRange()));
             }
         });
 

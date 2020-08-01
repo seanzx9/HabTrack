@@ -15,7 +15,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Stack;
+
 public class MainActivity extends AppCompatActivity {
+    private BottomNavigationView bnv;
+    private Stack<Integer> fragments;
+    private int curFragmentId;
+    private boolean backPressed;
     private FirebaseAuth mAuth;
 
     @Override
@@ -24,10 +30,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
 
+        fragments = new Stack<>();
         openFragment(WallFragment.newInstance());
+        curFragmentId = R.id.wall;
+        backPressed = false;
 
         //initialize bottom navbar
-        BottomNavigationView bnv = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bnv = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bnv.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -35,18 +44,23 @@ public class MainActivity extends AppCompatActivity {
                         switch (item.getItemId()) {
                             case R.id.wall:
                                 openFragment(WallFragment.newInstance());
+                                curFragmentId = R.id.wall;
                                 return true;
                             case R.id.friends:
                                 openFragment(FriendsFragment.newInstance());
+                                curFragmentId = R.id.friends;
                                 return true;
                             case R.id.post:
                                 openFragment(PostFragment.newInstance());
+                                curFragmentId = R.id.post;
                                 return true;
                             case R.id.notifications:
                                 openFragment(NotificationsFragment.newInstance());
+                                curFragmentId = R.id.notifications;
                                 return true;
                             case R.id.profile:
                                 openFragment(ProfileFragment.newInstance());
+                                curFragmentId = R.id.profile;
                                 return true;
                         }
                         return false;
@@ -62,6 +76,22 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 //        FirebaseUser currentUser = mAuth.getCurrentUser();
 //        updateUI(currentUser);
+    }
+
+    /**
+     * Navigate through app with back button.
+     */
+    @Override
+    public void onBackPressed() {
+        if (fragments.isEmpty() || curFragmentId == R.id.wall) {
+            finish();
+        }
+        else {
+            int id = fragments.pop();
+            backPressed = true;
+            bnv.setSelectedItemId(id);
+            curFragmentId = id;
+        }
     }
 
     private void updateUI(FirebaseUser user) {
@@ -82,5 +112,8 @@ public class MainActivity extends AppCompatActivity {
         transaction.replace(R.id.main_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+
+        if (!backPressed) fragments.push(curFragmentId);
+        else backPressed = false;
     }
 }

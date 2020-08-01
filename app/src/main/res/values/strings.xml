@@ -48,4 +48,10 @@
     <string name="delete">Delete</string>
     <string name="date">Date</string>
 
+    <string name="my_profile">My Profile</string>
+    <string name="bio">Bio</string>
+    <string name="zero_habits">0 habits</string>
+    <string name="zero_friends">0 friends</string>
+    <string name="edit">Edit</string>
+
 </resources>

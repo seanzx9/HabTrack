@@ -7,7 +7,7 @@
     android:layout_height="150dp"
     android:layout_marginHorizontal="10dp"
     android:layout_marginVertical="25dp"
-    app:cardElevation="8dp"
+    app:cardElevation="12dp"
     app:cardCornerRadius="15dp"
     android:outlineSpotShadowColor="@color/shadow"
     android:outlineAmbientShadowColor="@color/shadow"

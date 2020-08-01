@@ -31,4 +31,5 @@
     <color name="icon_tint">#2A2828</color>
     <color name="edit_text_on">#86BBD8</color>
     <color name="pie_off">#F2F2F2</color>
+    <color name="faded_text">#E5C7EC</color>
 </resources>

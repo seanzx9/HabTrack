@@ -27,7 +27,7 @@ import java.util.Map;
 
 public class WallFragment extends Fragment {
     private LinearLayoutManager llmVertical;
-    private RecyclerView.Adapter<HabitAdapter.HabitViewHolder> adapterWall;
+    private RecyclerView.Adapter<WallAdapter.WallViewHolder> adapterWall;
     private ArrayList<Map<String, Object>> wallItems;
     private ArrayList<Map<String, Object>> personalItems;
     private ArrayList<Map<String, Object>> database; //test data
@@ -47,17 +47,6 @@ public class WallFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View view =  inflater.inflate(R.layout.fragment_wall, container, false);
 
-        //back button ends activity
-        view.setFocusableInTouchMode(true);
-        view.requestFocus();
-        view.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                getActivity().finish();
-                return keyCode == KeyEvent.KEYCODE_BACK;
-            }
-        });
-
         //initialize top bar color
         final Window window = getActivity().getWindow();
         final CoordinatorLayout cl = (CoordinatorLayout) view.findViewById(R.id.main_layout);
@@ -68,7 +57,7 @@ public class WallFragment extends Fragment {
 
         //welcome text animation
         Animation enterTop = AnimationUtils.loadAnimation(getContext(), R.anim.fade_slide_from_top);
-        TextView welcome = (TextView) view.findViewById(R.id.welcome);
+        final TextView welcome = (TextView) view.findViewById(R.id.welcome);
         welcome.startAnimation(enterTop);
 
         //initialize arraylist for wall
@@ -92,6 +81,8 @@ public class WallFragment extends Fragment {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 rvPersonal.setAlpha(1.0f - Math.abs(verticalOffset / (float)
+                        appBarLayout.getTotalScrollRange()));
+                welcome.setAlpha(1.0f - Math.abs(verticalOffset / (float)
                         appBarLayout.getTotalScrollRange()));
 
                 if (rvPersonal.getAlpha() == 0.0) {
@@ -118,7 +109,7 @@ public class WallFragment extends Fragment {
         RecyclerView rvWall = (RecyclerView) view.findViewById(R.id.wall);
         llmVertical = new LinearLayoutManager(getContext());
         rvWall.setLayoutManager(llmVertical);
-        adapterWall = new HabitAdapter(wallItems, llmVertical);
+        adapterWall = new WallAdapter(wallItems, llmVertical);
         rvWall.setAdapter(adapterWall);
 
         //lazy load wall items
@@ -180,6 +171,7 @@ public class WallFragment extends Fragment {
             item.put("username", testUsername[(int)(Math.random() * 11)]);
             item.put("iconId", testIcons[(int)(Math.random() * 14)]);
             item.put("habitName", testHabits[(int)(Math.random() * 10)]);
+            item.put("frequency", testFrequency[(int)(Math.random() * 3)]);
             int streak = (int)(Math.random() * 200) + 1;
             item.put("curStreak", streak);
             item.put("bestStreak", streak + (int)(Math.random() * 200));

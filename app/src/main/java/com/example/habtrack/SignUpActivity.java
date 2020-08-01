@@ -2,10 +2,13 @@ package com.example.habtrack;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -20,6 +23,16 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+        //set status bar to background color
+        Window window = getWindow();
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.background));
+        int uiFlag = this.getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK;
+        int darkFlag = Configuration.UI_MODE_NIGHT_YES;
+        window.getDecorView().setSystemUiVisibility((uiFlag == darkFlag)?
+                window.getDecorView().getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR:
+                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         //animate sign in text out
         Animation slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_down);

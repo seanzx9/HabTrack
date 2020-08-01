@@ -144,7 +144,6 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
         }
         else {
             pfp = ContextCompat.getDrawable(context, R.drawable.default_pfp);
-            fvh.profilePic.setBorderColor(ContextCompat.getColor(context, android.R.color.transparent));
             fvh.profilePic.setImageTintList(ColorStateList
                     .valueOf(ContextCompat.getColor(context, R.color.text)));
         }

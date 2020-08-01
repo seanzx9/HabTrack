@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,6 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
@@ -46,17 +51,73 @@ public class NotificationsFragment extends Fragment {
         window.getDecorView().setSystemUiVisibility(
                 view.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
+        //welcome text animation
+        Animation enterTop = AnimationUtils.loadAnimation(getContext(), R.anim.item_enter_from_top);
+        TextView notification = (TextView) view.findViewById(R.id.notifications_text);
+        notification.startAnimation(enterTop);
+
         //initialize arraylist for notifications
         notificationItems = new ArrayList<>();
         generateTestData();
-        loadData();
+        loadNextData(0);
 
         //recyclerview for notifications
-        RecyclerView rv = (RecyclerView) view.findViewById(R.id.notifications);
+        final RecyclerView rv = (RecyclerView) view.findViewById(R.id.notifications);
         llm = new LinearLayoutManager(getContext());
         rv.setLayoutManager(llm);
         adapter = new NotificationsAdapter(notificationItems, llm);
         rv.setAdapter(adapter);
+
+        //lazy load notifications
+        rv.addOnScrollListener(new EndlessRecyclerViewScrollListener(llm) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                loadNextData(page);
+            }
+        });
+
+        //delete notification on swipe
+        ItemTouchHelper.SimpleCallback touchCallback = new ItemTouchHelper
+                .SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView,
+                                  RecyclerView.ViewHolder viewHolder,
+                                  RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                int pos = viewHolder.getLayoutPosition();
+                notificationItems.remove(pos);
+                adapter.notifyItemRemoved(pos);
+                adapter.notifyItemRangeChanged(pos, adapter.getItemCount());
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(touchCallback);
+        itemTouchHelper.attachToRecyclerView(rv);
+
+        rv.setLayoutAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {}
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                rv.smoothScrollToPosition(0);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {}
+        });
+
+        //scroll to top on click
+        ConstraintLayout topBar = (ConstraintLayout) view.findViewById(R.id.top_bar);
+        topBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rv.smoothScrollToPosition(0);
+            }
+        });
 
         return view;
     }
@@ -89,10 +150,15 @@ public class NotificationsFragment extends Fragment {
             database.add(item);
         }
     }
+
     /**
-     * Loads data into list.
+     * Loads next notifications.
+     *
+     * @param offset page offset
      */
-    private void loadData() {
-        notificationItems.addAll(database);
+    public void loadNextData(int offset) {
+        for (int i = offset; i < offset + 10; i++)
+            notificationItems.add(database.get(i));
+        if (offset > 0) adapter.notifyDataSetChanged();
     }
 }

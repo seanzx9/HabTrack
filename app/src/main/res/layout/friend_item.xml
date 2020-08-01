@@ -14,8 +14,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginVertical="15dp"
-        app:cardElevation="8dp"
+        android:layout_marginVertical="12dp"
+        app:cardElevation="5dp"
         app:cardCornerRadius="15dp"
         android:outlineSpotShadowColor="@color/shadow"
         android:outlineAmbientShadowColor="@color/shadow"
@@ -25,7 +25,7 @@
             android:id="@+id/card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="20dp"
+            android:paddingVertical="10dp"
             android:paddingHorizontal="5dp"
             android:background="@drawable/rounded_card">
 
@@ -37,8 +37,6 @@
                 app:layout_constraintBottom_toTopOf="@id/username"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:border_width="0.1dp"
-                app:border_color="@color/hint"
                 android:src="@drawable/default_pfp" />
 
             <TextView
@@ -65,14 +63,19 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 android:layout_marginTop="20dp"
-                android:paddingVertical="5dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="6dp"
                 android:paddingHorizontal="10dp"
                 android:clickable="true"
                 android:background="@drawable/rounded_button">
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
                     android:fontFamily="@font/roboto"
                     android:text="@string/remove"
                     android:textSize="15sp"
