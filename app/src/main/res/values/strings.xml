@@ -41,6 +41,9 @@
 
     <string name="search">Search friends</string>
     <string name="remove">Remove</string>
+    <string name="remove_friend">Remove Friend</string>
+    <string name="add_friend">Add Friend</string>
+    <string name="back">Back</string>
 
     <string name="options">Options</string>
     <string name="mark_read">Mark as Read</string>

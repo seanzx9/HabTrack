@@ -8,7 +8,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.KeyEvent;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class WallFragment extends Fragment {
-    private LinearLayoutManager llmVertical;
     private RecyclerView.Adapter<WallAdapter.WallViewHolder> adapterWall;
     private ArrayList<Map<String, Object>> wallItems;
     private ArrayList<Map<String, Object>> personalItems;
@@ -56,7 +55,7 @@ public class WallFragment extends Fragment {
                 view.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         //welcome text animation
-        Animation enterTop = AnimationUtils.loadAnimation(getContext(), R.anim.fade_slide_from_top);
+        Animation enterTop = AnimationUtils.loadAnimation(getContext(), R.anim.delayed_enter_from_top);
         final TextView welcome = (TextView) view.findViewById(R.id.welcome);
         welcome.startAnimation(enterTop);
 
@@ -80,12 +79,12 @@ public class WallFragment extends Fragment {
         appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                rvPersonal.setAlpha(1.0f - Math.abs(verticalOffset / (float)
-                        appBarLayout.getTotalScrollRange()));
-                welcome.setAlpha(1.0f - Math.abs(verticalOffset / (float)
-                        appBarLayout.getTotalScrollRange()));
+                float alphaVal = 1.0f - Math.abs(verticalOffset / (float) appBarLayout.getTotalScrollRange());
 
-                if (rvPersonal.getAlpha() == 0.0) {
+                rvPersonal.setAlpha(alphaVal);
+                welcome.setAlpha(alphaVal);
+
+                if (alphaVal == 0.0) {
                     cl.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.background));
                     window.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.background));
 
@@ -107,7 +106,7 @@ public class WallFragment extends Fragment {
 
         //initialize wall RecyclerView
         RecyclerView rvWall = (RecyclerView) view.findViewById(R.id.wall);
-        llmVertical = new LinearLayoutManager(getContext());
+        LinearLayoutManager llmVertical = new LinearLayoutManager(getContext());
         rvWall.setLayoutManager(llmVertical);
         adapterWall = new WallAdapter(wallItems, llmVertical);
         rvWall.setAdapter(adapterWall);
@@ -169,6 +168,7 @@ public class WallFragment extends Fragment {
             Map<String, Object> item = new HashMap<>();
             //item.put("pfp", R.drawable.default_pfp);
             item.put("username", testUsername[(int)(Math.random() * 11)]);
+            item.put("bio", "This is bio number " + i);
             item.put("iconId", testIcons[(int)(Math.random() * 14)]);
             item.put("habitName", testHabits[(int)(Math.random() * 10)]);
             item.put("frequency", testFrequency[(int)(Math.random() * 3)]);
@@ -179,6 +179,8 @@ public class WallFragment extends Fragment {
             item.put("dates", dates);
             item.put("isLiked", likedArray[(int)(Math.random()* 2)]);
             item.put("likes", (int)(Math.random() * 500));
+            item.put("numFriends", (int)(Math.random() * 1500));
+            item.put("numHabits", (int)(Math.random() * 20));
             database.add(item);
         }
 

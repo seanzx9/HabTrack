@@ -9,7 +9,6 @@ import android.os.Bundle;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -31,8 +32,6 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileFragment extends Fragment implements View.OnClickListener {
-    private LinearLayoutManager llm;
-    private RecyclerView.Adapter<ProfileAdapter.ProfileViewHolder> adapter;
     private Map<String, Object> profData;
     private ArrayList<Map<String, Object>> profileItems;
     private ArrayList<Map<String, Object>> database; //test data
@@ -66,6 +65,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         generateTestData();
         loadData();
 
+        //enter animation
+        Animation enterTop = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
+
         //settings button
         final ImageButton settings = (ImageButton) view.findViewById(R.id.settings);
         settings.setOnClickListener(this);
@@ -79,26 +81,30 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         else {
             pfp = ContextCompat.getDrawable(getContext(), R.drawable.default_pfp);
             profilePic.setImageTintList(ColorStateList.valueOf(ContextCompat
-                    .getColor(getContext(), R.color.text)));
+                    .getColor(getContext(), R.color.white)));
         }
         profilePic.setImageDrawable(pfp);
         profilePic.setOnClickListener(this);
+        profilePic.startAnimation(enterTop);
 
-        //edit_18 profile button
+        //edit profile button
         final ImageButton editProfile = (ImageButton) view.findViewById(R.id.edit_profile);
         editProfile.setOnClickListener(this);
+        editProfile.startAnimation(enterTop);
 
         //set username
         final TextView username = (TextView) view.findViewById(R.id.username);
         String usrStr = (profData.get("username") != null)? profData.get("username").toString() : "Username";
         username.setText(usrStr);
         username.setOnClickListener(this);
+        username.startAnimation(enterTop);
 
         //set bio
         final TextView bio = (TextView) view.findViewById(R.id.bio);
         String bioStr = (profData.get("bio") != null)? profData.get("bio").toString() : "Bio";
         bio.setText(bioStr);
         bio.setOnClickListener(this);
+        bio.startAnimation(enterTop);
 
         //set number of friends
         final TextView friends = (TextView) view.findViewById(R.id.friends);
@@ -106,34 +112,31 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         String friendsStr = (numFriends != 1)? numFriends + " friends" : numFriends + " friend";
         friends.setText(friendsStr);
         friends.setOnClickListener(this);
+        friends.startAnimation(enterTop);
 
         //set number of habits
         final TextView habits = (TextView) view.findViewById(R.id.num_habits);
         int numHabits = (profData.get("habits") != null)? (int) profData.get("habits") : 0;
         String habitsStr = (numHabits != 1)? numHabits + " habits" : numHabits + " habit";
         habits.setText(habitsStr);
+        habits.startAnimation(enterTop);
 
         //fade top on scroll
         final AppBarLayout appBar = (AppBarLayout) view.findViewById(R.id.app_bar);
         appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                settings.setAlpha(1.0f - Math.abs(verticalOffset / (float)
-                        appBarLayout.getTotalScrollRange()));
-                profilePic.setAlpha(1.0f - Math.abs(verticalOffset / (float)
-                        appBarLayout.getTotalScrollRange()));
-                username.setAlpha(1.0f - Math.abs(verticalOffset / (float)
-                        appBarLayout.getTotalScrollRange()));
-                editProfile.setAlpha(1.0f - Math.abs(verticalOffset / (float)
-                        appBarLayout.getTotalScrollRange()));
-                bio.setAlpha(1.0f - Math.abs(verticalOffset / (float)
-                        appBarLayout.getTotalScrollRange()));
-                friends.setAlpha(1.0f - Math.abs(verticalOffset / (float)
-                        appBarLayout.getTotalScrollRange()));
-                habits.setAlpha(1.0f - Math.abs(verticalOffset / (float)
-                        appBarLayout.getTotalScrollRange()));
+                float alphaVal = 1.0f - Math.abs(verticalOffset / (float) appBarLayout.getTotalScrollRange());
 
-                if (profilePic.getAlpha() == 0.0) {
+                settings.setAlpha(alphaVal);
+                profilePic.setAlpha(alphaVal);
+                username.setAlpha(alphaVal);
+                editProfile.setAlpha(alphaVal);
+                bio.setAlpha(alphaVal);
+                friends.setAlpha(alphaVal);
+                habits.setAlpha(alphaVal);
+
+                if (alphaVal == 0.0) {
                     cl.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.background));
                     window.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.background));
 
@@ -155,9 +158,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         //initialize profile RecyclerView
         RecyclerView rvProfile = (RecyclerView) view.findViewById(R.id.habits);
-        llm = new LinearLayoutManager(getContext());
+        LinearLayoutManager llm = new LinearLayoutManager(getContext());
         rvProfile.setLayoutManager(llm);
-        adapter = new ProfileAdapter(profileItems, llm);
+        RecyclerView.Adapter<ProfileAdapter.ProfileViewHolder> adapter = new ProfileAdapter(profileItems, llm);
         rvProfile.setAdapter(adapter);
 
         return view;

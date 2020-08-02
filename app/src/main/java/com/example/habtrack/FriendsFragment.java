@@ -16,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
@@ -30,8 +32,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FriendsFragment extends Fragment {
-    private GridLayoutManager glm;
-    private RecyclerView.Adapter<FriendsAdapter.FriendsViewHolder> adapterFriends;
     private ArrayList<Map<String, Object>> friendsItems;
     private ArrayList<Map<String, Object>> filteredItems;
     private ArrayList<Map<String, Object>> database; //test data
@@ -68,9 +68,10 @@ public class FriendsFragment extends Fragment {
 
         //initialize friends RecyclerView
         final RecyclerView rvFriends = (RecyclerView) view.findViewById(R.id.friends);
-        glm = new GridLayoutManager(getContext(), 2);
+        final GridLayoutManager glm = new GridLayoutManager(getContext(), 2);
         rvFriends.setLayoutManager(glm);
-        adapterFriends = new FriendsAdapter(filteredItems);
+        final RecyclerView.Adapter<FriendsAdapter.FriendsViewHolder> adapterFriends =
+                new FriendsAdapter(filteredItems);
         rvFriends.setAdapter(adapterFriends);
 
         //search bar
@@ -115,13 +116,17 @@ public class FriendsFragment extends Fragment {
 
         //random data
         String[] testUsername = {"gurp956", "seanzx9", "jupy", "john_smith", "jane_doe", "batman",
-            "superman123", "watermelon_lover12", "user123456789", "adam_jones", "a_ham8"};
+            "superman123", "watermelon_lover12", "user123456789", "adam_jones", "a_ham8",
+            "user_10", "ironman3000", "thanos", "lawrence_a", "abc123", "jeff_b"};
 
         //generate random data for testing
-        for (int i = 0; i <= 100; i++) {
+        for (int i = 0; i < 17; i++) {
             Map<String, Object> item = new HashMap<>();
             item.put("pfp", R.drawable.default_pfp);
-            item.put("username", testUsername[(int)(Math.random() * 11)]);
+            item.put("username", testUsername[i]);
+            item.put("bio", "This is bio number " + i);
+            item.put("numFriends", (int)(Math.random() * 1500));
+            item.put("numHabits", (int)(Math.random() * 20));
             database.add(item);
         }
     }
@@ -160,6 +165,13 @@ public class FriendsFragment extends Fragment {
         }
     }
 
+    /**
+     * Finds similarity between strings (0.0 being least, 1.0 being most).
+     *
+     * @param s1 first string to compare
+     * @param s2 second string to compare
+     * @return similarity value
+     */
     public double similarity(String s1, String s2) {
         String longer = s1, shorter = s2;
         if (s1.length() < s2.length()) {
@@ -172,6 +184,14 @@ public class FriendsFragment extends Fragment {
     }
 
     // Example implementation of the Levenshtein Edit Distance
+
+    /**
+     * Finds the Levenshtein edit distance.
+     *
+     * @param s1 first string to compare
+     * @param s2 second string to compare
+     * @return Levenshtein distance
+     */
     public int editDistance(String s1, String s2) {
         s1 = s1.toLowerCase();
         s2 = s2.toLowerCase();

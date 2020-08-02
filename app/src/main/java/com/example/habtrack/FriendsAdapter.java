@@ -2,8 +2,14 @@ package com.example.habtrack;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
@@ -19,6 +25,8 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -103,6 +111,68 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
                     dialog.getWindow().setDimAmount(0.75f);
                 }
             });
+
+            //view profile on click
+            View.OnClickListener viewProfile = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, ViewProfile.class);
+                    Bundle extras = new Bundle();
+                    Map<String, Object> item = data.get(getLayoutPosition());
+
+                    //profile pic
+                    Drawable pfp;
+                    if (item.get("pfp") != null && (int) item.get("pfp") != R.drawable.default_pfp) {
+                        pfp = ContextCompat.getDrawable(context, (int) item.get("pfp"));
+                    }
+                    else {
+                        pfp = ContextCompat.getDrawable(context, R.drawable.default_pfp);
+                        pfp.setTint(ContextCompat.getColor(context, R.color.white));
+                    }
+                    Bitmap bitmap = getBitmap(pfp);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                    byte[] b = baos.toByteArray();
+                    extras.putByteArray("pfp", b);
+
+                    //username
+                    String userStr = username.getText().toString();
+                    extras.putString("username", userStr);
+
+                    //bio
+                    String bioStr = (item.get("bio") != null)? item.get("bio").toString() : "Bio";
+                    extras.putString("bio", bioStr);
+
+                    //number of friends
+                    int numFriends = (item.get("numFriends") != null)? (int) item.get("numFriends") : 0;
+                    extras.putString("numFriends", Integer.toString(numFriends));
+
+                    //number of habits
+                    int numHabits = (item.get("numHabits") != null)? (int) item.get("numHabits") : 0;
+                    extras.putString("numHabits", Integer.toString(numHabits));
+
+                    intent.putExtras(extras);
+                    context.startActivity(intent);
+                }
+            };
+            profilePic.setOnClickListener(viewProfile);
+            username.setOnClickListener(viewProfile);
+        }
+
+        /**
+         * Gets bitmap from drawable.
+         *
+         * @param drawable drawable to convert
+         * @return bitmap of drawable
+         */
+        public Bitmap getBitmap(Drawable drawable) {
+            Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                    drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+
+            return bitmap;
         }
     }
 

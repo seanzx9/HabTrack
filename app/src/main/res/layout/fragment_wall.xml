@@ -64,7 +64,7 @@
         android:layout_height="match_parent"
         android:overScrollMode="never"
         android:scrollbars="none"
-        android:layoutAnimation="@anim/layout_enter_from_bottom"
+        android:layoutAnimation="@anim/layout_grow_from_bottom"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:background="@drawable/top_rounded_corners"/>
 

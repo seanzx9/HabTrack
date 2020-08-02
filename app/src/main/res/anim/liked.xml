@@ -4,11 +4,11 @@
 
     <scale
         android:duration="250"
-        android:fromXScale="1.1"
-        android:fromYScale="1.1"
+        android:fromXScale="110%"
+        android:toXScale="100%"
+        android:fromYScale="110%"
+        android:toYScale="100%"
         android:pivotX="50%"
-        android:pivotY="50%"
-        android:toXScale="1.0"
-        android:toYScale="1.0" />
+        android:pivotY="50%" />
 
 </set>
