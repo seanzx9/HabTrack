@@ -2,6 +2,7 @@ package com.example.habtrack;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
@@ -80,9 +81,9 @@ public class NotificationsFragment extends Fragment {
         ItemTouchHelper.SimpleCallback touchCallback = new ItemTouchHelper
                 .SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
-            public boolean onMove(RecyclerView recyclerView,
-                                  RecyclerView.ViewHolder viewHolder,
-                                  RecyclerView.ViewHolder target) {
+            public boolean onMove(@NonNull RecyclerView recyclerView,
+                                  @NonNull RecyclerView.ViewHolder viewHolder,
+                                  @NonNull RecyclerView.ViewHolder target) {
                 return false;
             }
 
@@ -92,6 +93,11 @@ public class NotificationsFragment extends Fragment {
                 notificationItems.remove(pos);
                 adapter.notifyItemRemoved(pos);
                 adapter.notifyItemRangeChanged(pos, adapter.getItemCount());
+            }
+
+            @Override
+            public float getSwipeThreshold(@NonNull RecyclerView.ViewHolder viewHolder) {
+                return 0.25f;
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(touchCallback);
