@@ -11,15 +11,17 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ViewProfile"></activity>
-        <activity android:name=".EditHabit" />
-        <activity android:name=".EditProfile" />
-        <activity android:name=".Settings" />
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".CreateHabit" android:screenOrientation="portrait" />
+        <activity android:name=".ViewProfile" android:screenOrientation="portrait" />
+        <activity android:name=".EditHabit" android:screenOrientation="portrait" />
+        <activity android:name=".EditProfile" android:screenOrientation="portrait" />
+        <activity android:name=".Settings" android:screenOrientation="portrait" />
+        <activity android:name=".SignUpActivity" android:screenOrientation="portrait" />
+        <activity android:name=".MainActivity" android:screenOrientation="portrait" />
         <activity
             android:name=".LoginActivity"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/SplashTheme"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
