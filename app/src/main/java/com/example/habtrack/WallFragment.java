@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,6 +58,15 @@ public class WallFragment extends Fragment {
         //welcome text animation
         Animation enterTop = AnimationUtils.loadAnimation(getContext(), R.anim.delayed_enter_from_top);
         final TextView welcome = (TextView) view.findViewById(R.id.welcome);
+        int curHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        if (curHour >= 5 && curHour < 11) {
+            String goodMorning = "Good morning.";
+            welcome.setText(goodMorning);
+        }
+        else if (curHour >= 17){
+            String goodEvening = "Good evening.";
+            welcome.setText(goodEvening);
+        }
         welcome.startAnimation(enterTop);
 
         //initialize arraylist for wall

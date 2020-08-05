@@ -379,7 +379,7 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.WallViewHolder
         //habit icon
         Drawable habitIcon = (item.get("iconId") != null)?
                 ContextCompat.getDrawable(context, (int) item.get("iconId")):
-                ContextCompat.getDrawable(context, R.drawable.app_icon);
+                ContextCompat.getDrawable(context, R.drawable.post_off);
         wvh.habitIcon.setImageDrawable(habitIcon);
     }
 
