@@ -52,7 +52,10 @@ public class MainActivity extends AppCompatActivity {
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
+                        int id = item.getItemId();
+                        if (id != R.id.wall && id == curFragmentId) return true;
+
+                        switch (id) {
                             case R.id.wall:
                                 openFragment(WallFragment.newInstance());
                                 curFragmentId = R.id.wall;
