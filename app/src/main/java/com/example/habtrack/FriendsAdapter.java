@@ -43,7 +43,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
     /**
      * Constructor with parameters.
      *
-     * @param data data to update wall with
+     * @param data data to update friends list with
      */
     public FriendsAdapter(ArrayList<Map<String, Object>> data) {
         this.data = data;

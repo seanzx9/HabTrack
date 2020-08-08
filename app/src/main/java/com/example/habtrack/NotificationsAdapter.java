@@ -31,7 +31,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     /**
      * Constructor with parameters.
      *
-     * @param data data to update wall with
+     * @param data data to update notifications with
      */
     public NotificationsAdapter(ArrayList<Map<String, Object>> data, RecyclerView.LayoutManager lm) {
         this.data = data;

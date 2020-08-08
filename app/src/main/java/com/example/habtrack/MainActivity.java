@@ -3,12 +3,17 @@ package com.example.habtrack;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -18,7 +23,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity {
-    private BottomNavigationView bnv;
+    public BottomNavigationView bnv;
     private Stack<Integer> fragments;
     private int curFragmentId;
     private boolean backPressed;
@@ -29,6 +34,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+
+        //initialize top bar color
+        final Window window = this.getWindow();
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.purple));
+        window.getDecorView().setSystemUiVisibility(window
+                .getDecorView().getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         fragments = new Stack<>();
         openFragment(WallFragment.newInstance());
@@ -51,8 +62,8 @@ public class MainActivity extends AppCompatActivity {
                                 curFragmentId = R.id.friends;
                                 return true;
                             case R.id.post:
-                                openFragment(PostFragment.newInstance());
-                                curFragmentId = R.id.post;
+                                Intent intent = new Intent(MainActivity.this, CreateHabit.class);
+                                startActivity(intent);
                                 return true;
                             case R.id.notifications:
                                 openFragment(NotificationsFragment.newInstance());
@@ -76,6 +87,12 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 //        FirebaseUser currentUser = mAuth.getCurrentUser();
 //        updateUI(currentUser);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        bnv.setSelectedItemId(curFragmentId);
     }
 
     /**

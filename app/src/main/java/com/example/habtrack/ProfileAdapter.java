@@ -49,7 +49,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
     /**
      * Constructor with parameters.
      *
-     * @param data data to update wall with
+     * @param data data to update profile with
      */
     public ProfileAdapter(ArrayList<Map<String, Object>> data, RecyclerView.LayoutManager lm) {
         this.data = data;

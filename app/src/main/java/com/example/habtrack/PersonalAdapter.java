@@ -33,7 +33,7 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalAdapter.Person
     /**
      * Constructor with parameters.
      *
-     * @param data data to update wall with
+     * @param data data to update personal wall with
      */
     public PersonalAdapter(ArrayList<Map<String, Object>> data, RecyclerView.LayoutManager lm) {
         this.data = data;

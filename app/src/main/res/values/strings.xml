@@ -45,6 +45,19 @@
     <string name="add_friend">Add Friend</string>
     <string name="back">Back</string>
 
+    <string name="create_habit">Name your new habit.</string>
+    <string name="name_habit">Name your habit…</string>
+    <string name="choose_frequency">How often?</string>
+    <string name="daily">Daily</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
+    <string name="choose_icon">Choose an icon.</string>
+    <string name="visibility">Who can view this?</string>
+    <string name="just_me">Just me</string>
+    <string name="my_friends">My friends</string>
+    <string name="anyone">Anyone</string>
+    <string name="create">Create</string>
+
     <string name="options">Options</string>
     <string name="mark_read">Mark as Read</string>
     <string name="mark_unread">Mark as Unread</string>
