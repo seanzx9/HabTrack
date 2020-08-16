@@ -247,8 +247,7 @@
         android:layout_marginEnd="20dp"
         android:elevation="4dp"
         android:clickable="true"
-        android:background="@drawable/email_sign_in_button"
-        android:transitionName="@string/sign_up">
+        android:background="@drawable/email_sign_in_button">
 
         <TextView
             android:id="@+id/create_text"
