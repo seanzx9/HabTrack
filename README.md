@@ -1,4 +1,4 @@
 # HabTrack
-Android habit tracker app with social networking features.
+Native Android habit tracker app with social networking features.
 
 *Backend to be added
